@@ -125,5 +125,6 @@ else
     chmod 0774 $DAP_PREFIX/bin/*
     chmod 0777 $DAP_PREFIX/bin/$DAP_APP_NAME-cli
     service cellframe-node start || true
+    systemctl restart cellframe-node || true
     echo "[!] Done"
 fi
