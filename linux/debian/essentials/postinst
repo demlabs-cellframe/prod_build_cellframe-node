@@ -117,13 +117,13 @@ else
     #chown -R $USERMAN:$USERMAN $DAP_PREFIX
     for filename in $(find $DAP_PREFIX); do
         if [ -d $filename ]; then
-            chmod 0775 $filename
+            chmod 0775 $filename || true
         else
-            chmod 0664 $filename
+            chmod 0664 $filename || true
         fi
     done
-    chmod 0774 $DAP_PREFIX/bin/*
-    chmod 0777 $DAP_PREFIX/bin/$DAP_APP_NAME-cli
+    chmod 0774 $DAP_PREFIX/bin/* || true
+    chmod 0777 $DAP_PREFIX/bin/$DAP_APP_NAME-cli || true
     service cellframe-node start || true
     systemctl restart cellframe-node || true
     echo "[!] Done"
