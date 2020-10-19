@@ -115,7 +115,7 @@ else
     mkdir -p $DAP_PREFIX/var/{run,lib/ca,lib/wallet,lib/global_db,var/plugins} || true
     touch $DAP_PREFIX/var/run/cellframe-node.pid || true
     #chown -R $USERMAN:$USERMAN $DAP_PREFIX
-    for filename in $(find $DAP_PREFIX); do
+    for filename in $(find $DAP_PREFIX | grep -v bugreport); do
         if [ -d $filename ]; then
             chmod 0775 $filename || true
         else
