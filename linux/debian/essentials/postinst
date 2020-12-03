@@ -107,6 +107,8 @@ else
     echo "[ ] Execute 'systemctl start $DAP_APP_NAME' to start $DAP_APP_NAME service"
 
     #USERMAN=`users | awk '{print $1}'`
+    echo "[ ] Enabling logrotate"
+    ln -sf $DAP_PREFIX/share/logrotate/$DAP_APP_NAME /etc/logrotate.d/$DAP_APP_NAME || true
     adduser --system --no-create-home --group --home /opt/cellframe-node cellframe-node || true
     #usermod -aG $DAP_CHAINS_NAME `users | awk '{print $1}'`
     for username in $(cat /etc/passwd | grep "/home" | cut -d ':' -f1); do
