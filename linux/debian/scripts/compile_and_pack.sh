@@ -62,7 +62,8 @@ pwd
 error=0
 mkdir -p packages
 
-substitute_pkgname_postfix && mkdir -p build && cd build && cmake ../ && make -j$(nproc) && cpack && repack *.deb && mv -v *.deb ../packages/ && cd .. && rm -r build || error=$?
+substitute_pkgname_postfix && mkdir -p build && cd build && cmake ../ && make -j$(nproc) && cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
+&& cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && cpack && repack *.deb && mv -v *.deb ../packages/ && cd .. && rm -r build || error=$?
 exit $error
 
 ### touch /etc/apt/sources.list.d/demlabs.list deb https://debian.pub.demlabs.net/ bionic main universe multiverse
