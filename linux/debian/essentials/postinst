@@ -25,20 +25,22 @@ fi
 
 cat $DAP_CFG_TPL > $DAP_CFG || true
 
+sed -i "s/{PREFIX}/$RET/g" $DAP_PREFIX  || true
+
 db_get cellframe-node/debug_mode || true
-sed -i "s/{DEBUG_MODE}/$RET/" $DAP_CFG  || true
+sed -i "s/{DEBUG_MODE}/$RET/g" $DAP_CFG  || true
 
 db_get cellframe-node/auto_online || true
-sed -i "s/{AUTO_ONLINE}/$RET/" $DAP_CFG  || true
+sed -i "s/{AUTO_ONLINE}/$RET/g" $DAP_CFG  || true
 
 db_get cellframe-node/server_enabled || true
-sed -i "s/{SERVER_ENABLED}/$RET/" $DAP_CFG  || true
+sed -i "s/{SERVER_ENABLED}/$RET/g" $DAP_CFG  || true
 
 db_get cellframe-node/server_port || true
-sed -i "s/{SERVER_PORT}/$RET/" $DAP_CFG  || true
+sed -i "s/{SERVER_PORT}/$RET/g" $DAP_CFG  || true
 
 db_get cellframe-node/server_addr || true
-sed -i "s/{SERVER_ADDR}/$RET/" $DAP_CFG  || true
+sed -i "s/{SERVER_ADDR}/$RET/g" $DAP_CFG  || true
 
 
 # Init core testnet
@@ -58,7 +60,7 @@ if [ "$RET" = "true" ]; then
     cat $DAP_CFG_NET_TPL > $DAP_NET_CFG || true
     db_get cellframe-node/core_t_node_type || true
     NODE_TYPE=$RET
-    sed -i "s/{NODE_TYPE}/$NODE_TYPE/" $DAP_NET_CFG  || true
+    sed -i "s/{NODE_TYPE}/$NODE_TYPE/g" $DAP_NET_CFG  || true
     echo "[*] Enabled core testnet"
 fi
 
@@ -81,7 +83,7 @@ if [ "$RET" = "true" ]; then
     cat $DAP_CFG_NET_TPL > $DAP_NET_CFG || true
     db_get cellframe-node/kelvin_testnet_node_type || true
     NODE_TYPE=$RET
-    sed -i "s/{NODE_TYPE}/$NODE_TYPE/" $DAP_NET_CFG  || true
+    sed -i "s/{NODE_TYPE}/$NODE_TYPE/g" $DAP_NET_CFG  || true
     echo "[*] Enabled kelvin testnet"
 fi
 
