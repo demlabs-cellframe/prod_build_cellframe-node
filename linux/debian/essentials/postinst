@@ -25,7 +25,7 @@ fi
 
 cat $DAP_CFG_TPL > $DAP_CFG || true
 
-sed -i "s/{PREFIX}/$RET/g" $DAP_CFG  || true
+sed -i "s/{PREFIX}/\/opt\/$DAP_APP_NAME/g" $DAP_CFG  || true
 
 db_get cellframe-node/debug_mode || true
 sed -i "s/{DEBUG_MODE}/$RET/g" $DAP_CFG  || true
