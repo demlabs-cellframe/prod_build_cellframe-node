@@ -125,7 +125,7 @@ CHROOT_PREFIX=$1
 for distr in $HOST_DISTR_VERSIONS; do #we need to install required dependencies under schroot.
 	for arch in $HOST_ARCH_VERSIONS; do
 		echo "$CHROOT_PREFIX-$distr-$arch"
-		schroot -c $CHROOT_PREFIX-$distr-$arch -- launcher.sh prod_build/linux/ubuntu/scripts/chroot/pre-build.sh "$PKG_DEPS" || errcode=$?
+		schroot -c $CHROOT_PREFIX-$distr-$arch -- sudo prod_build/linux/ubuntu/scripts/chroot/pre-build.sh "$PKG_DEPS" || errcode=$?
 		[[ $errcode != 0 ]] && echo "Problems with $CHROOT_PREFIX-$distr-$arch occured. You had installed it, right?"
 	done
 done

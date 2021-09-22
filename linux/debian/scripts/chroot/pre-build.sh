@@ -24,7 +24,7 @@ install_dependencies() {
 		echo ""
 		local PKG_DEPPIES=$(echo $PKG_DEPS | sed 's/\"//g')
 		echo "[DEBUGGA] Attempting to install $PKG_DEPPIES"
-		if sudo apt-get install $PKG_DEPPIES -y ; then
+		if apt-get install $PKG_DEPPIES -y ; then
 			echo ""
 			echo "[INF] Packages were installed successfully"
 		else
