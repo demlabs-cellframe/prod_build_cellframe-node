@@ -3,12 +3,13 @@
 DESTDIR=$1
 wd=$2
 
-echo "[INF] Building Cellframe-node"
+echo "[INF] Building cellframe-node"
 cd $wd 
 
 . prod_build/general/pre-build.sh
 
 export_variables "./prod_build/windows/conf/*"
+
 
 IFS=" "
 for lib in $LIBS; do
@@ -26,5 +27,6 @@ done
 
 
 mkdir build && cd build && \
-x86_64-w64-mingw32.static-cmake .. && make -j$(nproc) || echo "$PATH error $?" && exit $?
+x86_64-w64-mingw32.static-cmake .. && make -j$(nproc) && \
+cp -f cellframe-node*.exe $DESTDIR || echo "$PATH error $?" && exit $?
 
