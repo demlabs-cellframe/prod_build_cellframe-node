@@ -25,5 +25,4 @@ done
 
 mkdir build && cd build && \
 x86_64-w64-mingw32.static-cmake .. && make -j$(nproc) && \
-mv cellframe-node*.exe $DESTDIR  && make clean && cd .. && rm build || echo "error $?" && exit $?
-
+mv cellframe-node*.exe $DESTDIR  && make clean && cd .. && rm -r build || echo "error $?" && exit $?
