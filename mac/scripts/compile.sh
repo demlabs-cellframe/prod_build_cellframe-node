@@ -6,4 +6,4 @@ echo "[INF] Building cellframe-node"
 cd $wd 
 
 mkdir build
-cd build && "$CROSS_COMPILE"cmake .. && make -j$(nproc) || echo "error $?" && exit $?
+cd build && СС="$CROSS_COMPILE"gcc "$CROSS_COMPILE"cmake .. && make -j$(nproc) || echo "error $?" && exit $?
