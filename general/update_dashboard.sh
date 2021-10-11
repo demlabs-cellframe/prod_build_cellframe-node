@@ -7,6 +7,7 @@ git remote set-url origin https://${USER}:${CI_PUSH_TOKEN}@gitlab.demlabs.net/ce
 git checkout support-4958
 
 versionPatch=$(cat config.pri | grep 'VER_PAT =' | cut -d'=' -f 2)
+echo "version patch = $versionPatch"
 let "versionPatch++"
 echo "update version patch to $versionPatch"
 sed -i "s/VER_PAT = \"[0-9]\+\"/VER_PAT = \"$versionPatch\"/g" config.pri
