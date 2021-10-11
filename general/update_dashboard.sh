@@ -10,7 +10,7 @@ versionPatch=$(cat config.pri | grep 'VER_PAT =' | cut -d'=' -f 2)
 echo "version patch = $versionPatch"
 let "versionPatch++"
 echo "update version patch to $versionPatch"
-sed -i "s/VER_PAT = \"[0-9]\+\"/VER_PAT = \"$versionPatch\"/g" config.pri
+sed -i "s/VER_PAT = [0-9]\+/VER_PAT = $versionPatch/g" config.pri
 
 
 git add config.pri
