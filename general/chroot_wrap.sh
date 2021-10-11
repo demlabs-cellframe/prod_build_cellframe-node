@@ -46,7 +46,7 @@ for platform in $PLATFORMS; do
 	unexport_variables "./prod_build/$platform/conf/*"
 done
 
-if [[  $CI_COMMIT_REF_NAME == "support-5044" ]]; then
+if [[  $CI_COMMIT_REF_NAME == "master" ]]; then
 	./prod_build/general/update_dashboard.sh
 fi
 

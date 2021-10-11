@@ -4,7 +4,7 @@ git clone https://${USER}:${CI_PUSH_TOKEN}@gitlab.demlabs.net/cellframe/cellfram
 cd cellframe-dashboard
 git remote set-url origin https://${USER}:${CI_PUSH_TOKEN}@gitlab.demlabs.net/cellframe/cellframe-dashboard.git
 
-git checkout support-4958
+git checkout master
 
 versionPatch=$(cat config.pri | grep 'VER_PAT =' | cut -d'=' -f 2)
 echo "version patch = $versionPatch"
