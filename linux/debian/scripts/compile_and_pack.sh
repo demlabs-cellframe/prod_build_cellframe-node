@@ -68,7 +68,7 @@ substitute_pkgname_postfix && mkdir -p build && cd build && cmake ../ && make -j
 sed -ibak 's/#set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/' ../CMakeLists.txt || error=$?
 cmake ../ && make -j$(nproc) && cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
 && cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && cpack && repack *.deb && mv -v *.deb ../packages/ && cd .. && rm -r build && \
-mv -f ../CMakeLists.txtbak ../CMakeLists.txt || error=$?
+mv -f CMakeLists.txtbak CMakeLists.txt || error=$?
 exit $error
 
 
