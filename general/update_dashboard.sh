@@ -12,7 +12,10 @@ let "versionPatch++"
 echo "update version patch to $versionPatch"
 sed -i "s/VER_PAT = [0-9]\+/VER_PAT = $versionPatch/g" config.pri
 
+#update cellframe-node
 
-git add config.pri
+cd cellframe-node && git checkout master && cd -
+
+git add config.pri cellframe-node
 git commit -m 'update version patch'
 git push
