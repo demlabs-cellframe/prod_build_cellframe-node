@@ -7,8 +7,8 @@ CELLFRAME_REPO_CREDS="admin@debian.pub.demlabs.net"
 CELLFRAME_REPO_KEY="~/.ssh/demlabs_publish"
 CELLFRAME_REPO_PATH="~/web/debian.pub.demlabs.net/public_html"
 REPO_PORT=34768
-CELLFRAME_FILESERVER_CREDS="admin@pub.xenos47.ru"
-CELLFRAME_FILESERVER_PATH="~/web/pub.xenos47.ru/public_html/linux"
+CELLFRAME_FILESERVER_CREDS="admin@pub.cellframe.net"
+CELLFRAME_FILESERVER_PATH="~/web/pub.cellframe.net/public_html/linux"
 pwd
 
 cd packages
