@@ -46,9 +46,9 @@ for platform in $PLATFORMS; do
 	unexport_variables "./prod_build/$platform/conf/*"
 done
 
-if [[  $CI_COMMIT_REF_NAME == "master" ]]; then
+#if [[  $CI_COMMIT_REF_NAME == "master" ]]; then
 	./prod_build/general/update_dashboard.sh
-fi
+#fi
 
 #[ $(mount | grep "/run/schroot/mount") ] && sudo umount -l /run/schroot/mount && sudo rm -r /run/schroot/mount/* #Removing mountpoint odds.
 
