@@ -7,8 +7,8 @@ CELLFRAME_REPO_CREDS="admin@debian.pub.demlabs.net"
 CELLFRAME_REPO_KEY="~/.ssh/demlabs_publish"
 CELLFRAME_REPO_PATH="~/web/debian.pub.demlabs.net/public_html"
 REPO_PORT=34768
-CELLFRAME_FILESERVER_CREDS="admin@pub.cellframe.net"
-CELLFRAME_FILESERVER_PATH="~/web/pub.cellframe.net/public_html/linux"
+CELLFRAME_FILESERVER_CREDS="admin@pub.xenos47.ru"
+CELLFRAME_FILESERVER_PATH="~/web/pub.xenos47.ru/public_html/linux"
 pwd
 
 cd packages
@@ -28,7 +28,7 @@ for pkgfile in $PKGFILES; do
 	mv $pkgfile $wd/$PACKAGE_PATH/$pkgname$MOD.deb || { echo "[ERR] Something went wrong in publishing the package. Now aborting."; exit -4; }
 	CODENAME=$(echo $pkgname | rev | cut -d '-' -f1 | rev)
 	cp -r ../prod_build/general/essentials/weblink-latest ../prod_build/general/essentials/$pkgname_weblink
-	sed -i "/document/s/cellframe.*deb/$pkgname_public$MOD.deb/" ../prod_build/general/essentials/$pkgname_weblink/index.php
+	sed -i "/document/s/cellframe.*deb/$pkgname_public$MOD.deb/" ../prod_build/general/essentials/$pkgname_weblink/index.html
 #	if [[ $(echo $CI_COMMIT_REF_NAME | grep "master\|^release\|^pubtest") != "" ]]; then
 		echo "REF_NAME is $CI_COMMIT_REF_NAME"
 		ssh -i $CELLFRAME_REPO_KEY "$CELLFRAME_FILESERVER_CREDS" "mkdir -p $CELLFRAME_FILESERVER_PATH/$SUBDIR"
