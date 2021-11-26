@@ -30,6 +30,12 @@ reconfigure|configure)
    db_go || true 
 
    db_input critical cellframe-node/kelvin_testnet_node_type || true 
+   db_go || true
+
+   db_input critical cellframe-node/subzero_enabled || true 
+   db_go || true 
+
+   db_input critical cellframe-node/subzero_node_type || true 
    db_go || true 
 
 ;;
