@@ -47,13 +47,17 @@ substitute_pkgname_postfix && mkdir -p build && cd build && cmake ../ && make -j
 && cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 
 if [[ $(echo $ARCH_VERSIONS | grep arm64) != "" && $error == 0 ]]; then
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_ARM64
 	cmake -DCMAKE_C_COMPILER=$ARM64_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARM64_CXX_COMPILER -DCMAKE_TARGET_ARCH="arm64" .. && make -j$(nproc) && \
 	cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
+	unset LD_LIBRARY_PATH
 done
 
 if [[ $(echo $ARCH_VERSIONS | grep armhf) != "" && $error == 0 ]]; then
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_ARMHF
 	cmake -DCMAKE_C_COMPILER=$ARMHF_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARMHF_CXX_COMPILER -DCMAKE_TARGET_ARCH="armhf" .. && make -j$(nproc) && \
 	cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
+	unset LD_LIBRARY_PATH
 done
 
 if [[ $(echo $BUILD_TYPE | grep PGSQL) != "" && $error == 0 ]]; then
