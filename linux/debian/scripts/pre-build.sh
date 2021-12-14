@@ -1,74 +1,5 @@
 #!/bin/bash
 
-#export_variables() {
-
-#IFS=$'\n'
-#for variable in $(cat prod_build/linux/debian/conf/*); do
-#	echo "$variable"
-#	export $(echo "$variable" | sed 's/\"//g')
-#done
-
-#}
-
-
-#installing required dependencies
-
-check_packages() {
-
-	IFS=" "
-	local PKG_DEPPIES=$(echo $PKG_DEPS | sed 's/\"//g')
-	for element in "$PKG_DEPPIES"; do
-		echo "[DEBUGGA] Checking if $element is installed"
-		if ! dpkg-query -s $element; then 
-			echo "[WRN] Package $element is not installed. Starting installation"
-			return 1
-		fi
-	done
-	return 0
-
-}
-
-install_dependencies() {
-
-	if check_packages >> /dev/null; then
-		echo "[INF] All required packages are installed"
-	else
-		echo ""
-		local PKG_DEPPIES=$(echo $PKG_DEPS | sed 's/\"//g')
-		echo "[DEBUGGA] Attempting to install $PKG_DEPPIES"
-		if sudo /usr/bin/apt-get install -y $PKG_DEPPIES ; then
-			echo ""
-			echo "[INF] Packages were installed successfully"
-		else
-			echo "[ERR] can\'t install required packages. Please, check your package manager"
-			echo "Aborting"
-			exit 1
-		fi
-	fi
-	return 0
-
-}
-
-#extract_version_number() {
-
-#IFS=" "
-#for entry in $VERSION_ENTRIES; do
-#	VERSION_STRING=$(echo $VERSION_STRING | sed "s/$entry/$( cat $VERSION_FILE | grep $entry | sed 's/ //g' | cut -d '=' -f2 )/") #Replacing templates with numbers
-#done
-#echo -e "project version is $VERSION_STRING"
-#
-#}
-
-#extract_gitlog_text() {
-#
-#borders=$( git log | grep -n 'commit\|Date' | head -n 3 | tail -n 2 | cut -d ':' -f1)
-#upb=$(echo $borders | cut -d $'\n' -f1)
-#dwnb=$(echo $borders | cut -d $'\n' -f2)
-#text=$(git log | head -n $( expr $dwnb - 2 ) | tail -n $( expr $dwnb - $upb - 3 ) )
-#echo $text
-#
-#}
-
 #. prod_build/general/install_dependencies
 . prod_build/general/pre-build.sh #VERSIONS and git
 export_variables "prod_build/general/conf/*"
@@ -119,17 +50,6 @@ else
 	export UPDVER=1
 fi
 
-IFS=" "
-CHROOT_PREFIX=$1
-
-errcode=0
-for distr in $HOST_DISTR_VERSIONS; do #we need to install required dependencies under schroot.
-	for arch in $HOST_ARCH_VERSIONS; do
-		echo "$CHROOT_PREFIX-$distr-$arch"
-		schroot -c $CHROOT_PREFIX-$distr-$arch -- prod_build/linux/debian/scripts/chroot/pre-build.sh "$PKG_DEPS" || errcode=$?
-		[[ $errcode != 0 ]] && echo "Problems with $CHROOT_PREFIX-$distr-$arch occured. You had installed it, right?"
-	done
-done
 exit 0
 
 ## Maybe we do have the version required? Then we don't need to build it again. CHECK IT THERE!
