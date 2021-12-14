@@ -7,9 +7,9 @@ substitute_pkgname_postfix() {
 		echo "variable is $variable"
 		export $variable
 	done
-	sed -i "/ $CMAKE_PATH/cpack_SYSTEM_TYPE/s/\".*\"/\"$DistributorID\"/" CMakeLists.txt
-	sed -i "/ $CMAKE_PATH/cpack_SYSTEM_VERSION/s/\".*\"/\"$Release\"/" CMakeLists.txt
-	sed -i "/ $CMAKE_PATH/cpack_SYSTEM_CODENAME/s/\".*\"/\"$Codename\"/" CMakeLists.txt
+	sed -i "/ ${CMAKE_PATH}cpack_SYSTEM_TYPE/s/\".*\"/\"$DistributorID\"/" CMakeLists.txt
+	sed -i "/ ${CMAKE_PATH}cpack_SYSTEM_VERSION/s/\".*\"/\"$Release\"/" CMakeLists.txt
+	sed -i "/ ${CMAKE_PATH}cpack_SYSTEM_CODENAME/s/\".*\"/\"$Codename\"/" CMakeLists.txt
 	export -n "DistributorID"
 	export -n "Release"
 	export -n "Codename"
@@ -43,29 +43,29 @@ pwd
 error=0
 mkdir -p packages
 
-substitute_pkgname_postfix && mkdir -p build && cd build && $CMAKE_PATH/cmake ../ && make -j$(nproc) && $CMAKE_PATH/cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
-&& $CMAKE_PATH/cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && $CMAKE_PATH/cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
+substitute_pkgname_postfix && mkdir -p build && cd build && ${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
+&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 
 if [[ $(echo $ARCH_VERSIONS | grep arm64) != "" && $error == 0 ]]; then
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_ARM64
-	$CMAKE_PATH/cmake -DCMAKE_C_COMPILER=$ARM64_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARM64_CXX_COMPILER -DCMAKE_TARGET_ARCH="arm64" .. && make -j$(nproc) && \
-	$CMAKE_PATH/cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
-	&& $CMAKE_PATH/cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && $CMAKE_PATH/cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
+	${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARM64_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARM64_CXX_COMPILER -DCMAKE_TARGET_ARCH="arm64" .. && make -j$(nproc) && \
+	${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * && \
+	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 	unset LD_LIBRARY_PATH
 done
 
 if [[ $(echo $ARCH_VERSIONS | grep armhf) != "" && $error == 0 ]]; then
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_ARMHF
-	$CMAKE_PATH/cmake -DCMAKE_C_COMPILER=$ARMHF_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARMHF_CXX_COMPILER -DCMAKE_TARGET_ARCH="armhf" .. && make -j$(nproc) && \
-	$CMAKE_PATH/cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
-	&& $CMAKE_PATH/cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && $CMAKE_PATH/cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
+	${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARMHF_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARMHF_CXX_COMPILER -DCMAKE_TARGET_ARCH="armhf" .. && make -j$(nproc) && \
+	${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * && \
+	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 	unset LD_LIBRARY_PATH
 done
 
 if [[ $(echo $BUILD_TYPE | grep PGSQL) != "" && $error == 0 ]]; then
 	sed -ibak 's/#set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/' ../CMakeLists.txt || error=$?
-	$CMAKE_PATH/cmake ../ && make -j$(nproc) && $CMAKE_PATH/cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
-	&& $CMAKE_PATH/cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && $CMAKE_PATH/cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
+	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
+	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 done
 
 cd .. && rm -r build
