@@ -24,7 +24,7 @@ extract_version_number
 ### This is a solution. We modify the changelog only if there are updates and not on build servers. And of course if it's not cmake-based build project.
 ### let's keep those comments here for a while
 
-if [ $ONBUILDSERVER == 0 ]; then  
+if [[ $ONBUILDSERVER == 0 ]]; then  
 	echo "[WRN] on build platform. Version won't be changed" # okay, so this echo wont be outputted as the condition is not true
 
 elif [ ! -e debian/changelog ]; then  ### I guess this what's supposed to be added in order to solve the issue with the changelog?+
