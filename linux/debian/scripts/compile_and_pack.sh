@@ -52,7 +52,7 @@ if [[ $(echo $ARCH_VERSIONS | grep arm64) != "" && $error == 0 ]]; then
 	${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * && \
 	${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 	unset LD_LIBRARY_PATH
-done
+fi
 
 if [[ $(echo $ARCH_VERSIONS | grep armhf) != "" && $error == 0 ]]; then
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_ARMHF
@@ -60,13 +60,13 @@ if [[ $(echo $ARCH_VERSIONS | grep armhf) != "" && $error == 0 ]]; then
 	${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * && \
 	${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 	unset LD_LIBRARY_PATH
-done
+fi
 
 if [[ $(echo $BUILD_TYPE | grep PGSQL) != "" && $error == 0 ]]; then
 	sed -ibak 's/#set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/' ../CMakeLists.txt || error=$?
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
 	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
-done
+fi
 
 cd .. && rm -r build
 [ -e CMakeLists.txtbak ] && mv -f CMakeLists.txtbak CMakeLists.txt
