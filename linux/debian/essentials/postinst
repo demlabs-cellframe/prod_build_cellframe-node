@@ -14,7 +14,7 @@ DAP_CFG="$DAP_PREFIX/etc/$DAP_APP_NAME.cfg"
 
 # Check profile.d symlink
 
-[ -e "/etc/profile.d/$DAP_APP_NAME.sh" ] && ln -sf $DAP_PREFIX/share/profile.d/$DAP_APP_NAME.sh /etc/profile.d/$DAP_APP_NAME.sh
+[ -e "/etc/profile.d/$DAP_APP_NAME.sh" ] || ln -sf $DAP_PREFIX/share/profile.d/$DAP_APP_NAME.sh /etc/profile.d/$DAP_APP_NAME.sh
 
 # Init node config
 if [ -e "$DAP_CFG" ]; then
