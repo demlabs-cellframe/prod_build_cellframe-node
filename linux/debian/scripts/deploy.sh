@@ -21,7 +21,7 @@ PKGFILES=$(ls . | grep .deb)
 #echo "We have $DISTR_CODENAME there"
 #echo "On path $REPO_DIR_SRC we have debian files."
 for pkgfile in $PKGFILES; do
-	if [[ $(echo $pkgname | grep "pgsql") == "" ]]; then
+	if [[ $(echo $pkgfile | grep "pgsql") == "" ]]; then
 		CELLFRAME_FILESERVER_CREDS=$CELLFRAME_PUB_CREDS
 		CELLFRAME_FILESERVER_PATH=$CELLFRAME_PUB_PATH
 	else
