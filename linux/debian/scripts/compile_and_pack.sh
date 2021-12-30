@@ -64,7 +64,7 @@ if [[ $(echo $ARCH_VERSIONS | grep armhf) != "" && $error == 0 ]]; then
 	unset LD_LIBRARY_PATH
 fi
 
-if [[ $(echo $ARCH_VERSIONS | grep buster) != "" && $error == 0 ]]; then
+if [[ $(echo $BUILD_TYPE | grep PGSQL) != "" && $error == 0 ]]; then
 	sed -ibak 's/#set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/' ../CMakeLists.txt || error=$?
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
 	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
