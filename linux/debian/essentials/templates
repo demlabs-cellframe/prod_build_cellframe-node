@@ -71,3 +71,21 @@ Description: Kelvin Testnet: Node role
  archive - Sync all the network
  root - Special predefined root nodes, usualy produces zerochain and act like archive as well 
 
+Template: cellframe-node/subzero_enabled
+Default: true
+Choices: true, false
+Type: select
+Description: SubZero: Enable network
+ Kelvin Testnet: Enable network auto load on start
+
+Template: cellframe-node/subzero_node_type
+Type: select
+Default: full
+Choices: full, light, master, archive, root
+Description: SubZero: Node role
+ Select node role:. 
+ Light - syncronize only local wallets 
+ full - sync all its cell
+ master - allow to store values in chains and take comission, sync all shards that will need to be synced
+ archive - Sync all the network
+ root - Special predefined root nodes, usualy produces zerochain and act like archive as well 
