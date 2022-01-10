@@ -51,18 +51,18 @@ if [[ $ARCH_VERSION == "arm" ]]; then
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_ARM64
 	${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARM64_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARM64_CXX_COMPILER -DCMAKE_TARGET_ARCH="arm64" .. && make -j$(nproc) && \
 	${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * && \
-	${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
+	${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARM64_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARM64_CXX_COMPILER -DCMAKE_TARGET_ARCH="arm64" -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 	unset LD_LIBRARY_PATH
 
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_ARMHF
 	${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARMHF_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARMHF_CXX_COMPILER -DCMAKE_TARGET_ARCH="armhf" .. && make -j$(nproc) && \
 	${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * && \
-	${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
+	${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARMHF_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARMHF_CXX_COMPILER -DCMAKE_TARGET_ARCH="armhf" -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 	unset LD_LIBRARY_PATH
 fi
 
 if [[ $ARCH_VERSION == "amd64" ]]; then
-	sed -i 's/target_link_libraries(${NODE_TARGET}      ${NODE_LIBRARIES} pthread )/target_link_libraries(${NODE_TARGET}      ${NODE_LIBRARIES} pthread z util expat )/' ../CMakeLists.txt || error=$?
+	sed -i 's/target_link_libraries(${NODE_TARGET}      ${NODE_LIBRARIES} pthread )/target_link_libraries(${NODE_TARGET}      ${NODE_LIBRARIES} pthread z util expat )/' ../CMakeLists.txt || error=$?cd
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
 	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 

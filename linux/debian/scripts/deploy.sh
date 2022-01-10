@@ -29,7 +29,7 @@ for pkgfile in $PKGFILES; do
 		CELLFRAME_FILESERVER_PATH=$CELLFRAME_PVT_PATH
 	fi
 	pkgname=$(echo $pkgfile | sed 's/.deb$//')
-	pkgname_public=$(echo $pkgname | cut -d '-' -f1-4,7-) #cutting away Debian-9.12
+	pkgname_public=$(echo $pkgname | cut -d '-' -f1-4,7,9-) #cutting away Debian-9.12
 	pkgname_weblink="$(echo $pkgname | cut -d '-' -f2,8 )-latest" #leaving only necessary entries
 	echo "Package name for public is $pkgname_public"
 	mv $pkgfile $wd/$PACKAGE_PATH/$pkgname.deb || { echo "[ERR] Something went wrong in publishing the package. Now aborting."; exit -4; }
