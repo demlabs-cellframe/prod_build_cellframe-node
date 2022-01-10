@@ -61,7 +61,6 @@ if [[ $ARCH_VERSION == "arm" ]]; then
 	unset LD_LIBRARY_PATH
 fi
 
-if 
 if [[ $ARCH_VERSION == "amd64" ]]; then
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
 	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
@@ -75,13 +74,3 @@ cd .. && rm -r build
 [ -e CMakeLists.txtbak ] && mv -f CMakeLists.txtbak CMakeLists.txt
 
 exit $error
-
-
-### touch /etc/apt/sources.list.d/demlabs.list deb https://debian.pub.demlabs.net/ bionic main universe multiverse
-
-### wget https://debian.pub.demlabs.net/debian.pub.demlabs.net.gpg
-### apt-key add demlabskey.asc
-
-
-
-
