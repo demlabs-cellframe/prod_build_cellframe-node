@@ -10,7 +10,7 @@ REPO_PORT=34768
 CELLFRAME_PUB_CREDS="admin@pub.cellframe.net"
 CELLFRAME_PUB_PATH="~/web/pub.cellframe.net/public_html/linux"
 CELLFRAME_PVT_CREDS="admin@pvt.demlabs.net"
-CELLFRAME_PVT_PATH="~/web/public"
+CELLFRAME_PVT_PATH="~/web/public/cellframe-node"
 pwd
 
 cd packages
