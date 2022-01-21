@@ -32,6 +32,8 @@ tar xf $CONTROL
 VERSION=$(cat control | grep Version | cut -d ':' -f2)
 echo "Version is $VERSION"
 sed -i "s/$VERSION/${VERSION}-${DISTR_CODENAME}/" control
+#fixed link with python libraries
+sed -i "s/libpython3.5 (>= 3.5.0~b1)/libpython3-dev/" control
 rm $CONTROL && tar zcf $CONTROL *
 ar r ../$DEBNAME $CONTROL
 cd ..
