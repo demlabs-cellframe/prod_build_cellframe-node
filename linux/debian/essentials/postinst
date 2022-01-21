@@ -14,7 +14,8 @@ DAP_CFG="$DAP_PREFIX/etc/$DAP_APP_NAME.cfg"
 
 #fixed link with python library
 if [ ! -f "/usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0" ]; then
-    ln -sf /usr/lib/x86_64-linux-gnu/libpython3.*.so.1.0 /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0 || true
+    PYTHON_LIB=$(ls /usr/lib/x86_64-linux-gnu/ | grep libpython3.*.so.1.0 | cut -d$'\n' -f1)
+    ln -sf /usr/lib/x86_64-linux-gnu/$PYTHON_LIB /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0 || true
 fi
 
 # Check profile.d symlink
