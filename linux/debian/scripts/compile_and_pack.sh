@@ -64,8 +64,7 @@ if [[ $ARCH_VERSION == "arm" ]]; then
 fi
 
 if [[ $ARCH_VERSION == "amd64" ]]; then
-	sed -ibak 's/#set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/' ../CMakeLists.txt || error=$?
-	sed -ibak 's/#set(BUILD_WITH_PYTHON_ENV)/set(BUILD_WITH_PYTHON_ENV)/' ../CMakeLists.txt || error=$?
+	sed -i 's/#set(BUILD_WITH_PYTHON_ENV)/set(BUILD_WITH_PYTHON_ENV)/' ../CMakeLists.txt || error=$?
 
 	sed -i 's/target_link_libraries(${NODE_TARGET}      ${NODE_LIBRARIES} pthread )/target_link_libraries(${NODE_TARGET}      ${NODE_LIBRARIES} pthread z util expat )/' ../CMakeLists.txt || error=$?cd
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
@@ -73,7 +72,7 @@ if [[ $ARCH_VERSION == "amd64" ]]; then
 	sed -ibak 's/#set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/' ../CMakeLists.txt || error=$?
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
 	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
-fi
+fipuup
 
 cd .. && rm -r build
 [ -e CMakeLists.txtbak ] && mv -f CMakeLists.txtbak CMakeLists.txt
