@@ -12,11 +12,9 @@ DAP_CFG="$DAP_PREFIX/etc/$DAP_APP_NAME.cfg"
 
 
 
-#fixed link with python library
-if [ ! -f "/usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0" ]; then
-    PYTHON_LIB=$(ls /usr/lib/x86_64-linux-gnu/ | grep libpython3.*.so.1.0 | cut -d$'\n' -f1)
-    ln -sf /usr/lib/x86_64-linux-gnu/$PYTHON_LIB /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0 || true
-fi
+#unpack PYTHON_ENV
+tar -C /opt/cellframe-node/etc/ -xf /opt/cellframe-node/etc/cpython.tar.xz
+rm /opt/cellframe-node/etc/cpython.tar.xz
 
 # Check profile.d symlink
 
