@@ -64,7 +64,7 @@ if [[ $ARCH_VERSION == "arm" ]]; then
 fi
 
 if [[ $ARCH_VERSION == "amd64" ]]; then
-	sed -i 's/#set(BUILD_WITH_PYTHON_ENV)/set(BUILD_WITH_PYTHON_ENV)/' ../CMakeLists.txt || error=$?
+	sed -i 's/#set(BUILD_WITH_PYTHON_ENV ON)/set(BUILD_WITH_PYTHON_ENV ON)/' ../CMakeLists.txt || error=$?
 
 	sed -i 's/target_link_libraries(${NODE_TARGET}      ${NODE_LIBRARIES} pthread )/target_link_libraries(${NODE_TARGET}      ${NODE_LIBRARIES} pthread z util expat )/' ../CMakeLists.txt || error=$?cd
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
