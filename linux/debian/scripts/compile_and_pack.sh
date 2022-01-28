@@ -32,6 +32,8 @@ tar xf $CONTROL
 VERSION=$(cat control | grep Version | cut -d ':' -f2)
 echo "Version is $VERSION"
 sed -i "s/$VERSION/${VERSION}-${DISTR_CODENAME}/" control
+#fixed link with python libraries
+sed -i "s/libpython3.5 (>= 3.5.0~b1)/libpython3-dev/" control
 rm $CONTROL && tar zcf $CONTROL *
 ar r ../$DEBNAME $CONTROL
 cd ..
@@ -62,10 +64,11 @@ if [[ $ARCH_VERSION == "arm" ]]; then
 fi
 
 if [[ $ARCH_VERSION == "amd64" ]]; then
+	sed -i 's/#set(BUILD_WITH_PYTHON_ENV ON)/set(BUILD_WITH_PYTHON_ENV ON)/' ../CMakeLists.txt || error=$?
+
 	sed -i 's/target_link_libraries(${NODE_TARGET}      ${NODE_LIBRARIES} pthread )/target_link_libraries(${NODE_TARGET}      ${NODE_LIBRARIES} pthread z util expat )/' ../CMakeLists.txt || error=$?cd
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
 	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
-
 	sed -ibak 's/#set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/' ../CMakeLists.txt || error=$?
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
 	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
