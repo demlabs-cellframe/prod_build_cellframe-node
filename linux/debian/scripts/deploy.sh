@@ -3,10 +3,9 @@
 echo "Deploying to $PACKAGE_PATH"
 echo $wd
 
-CELLFRAME_REPO_CREDS="admin@debian.pub.demlabs.net"
 CELLFRAME_REPO_KEY="~/.ssh/demlabs_publish"
-CELLFRAME_REPO_PATH="~/web/debian.pub.demlabs.net/public_html"
 REPO_PORT=34768
+CELLFRAME_PUB_REPO_CREDS="admin@debian.pub.demlabs.net"
 CELLFRAME_PUB_CREDS="admin@pub.cellframe.net"
 CELLFRAME_PUB_PATH="~/web/pub.cellframe.net/public_html/linux"
 CELLFRAME_PVT_CREDS="admin@pvt.demlabs.net"
@@ -24,9 +23,11 @@ for pkgfile in $PKGFILES; do
 	if [[ $(echo $pkgfile | grep "pgsql") == "" ]]; then
 		CELLFRAME_FILESERVER_CREDS=$CELLFRAME_PUB_CREDS
 		CELLFRAME_FILESERVER_PATH=$CELLFRAME_PUB_PATH
+		CELLFRAME_REPO_CREDS=$CELLFRAME_PUB_REPO_CREDS
 	else
 		CELLFRAME_FILESERVER_CREDS=$CELLFRAME_PVT_CREDS
 		CELLFRAME_FILESERVER_PATH=$CELLFRAME_PVT_PATH
+		CELLFRAME_REPO_CREDS=$CELLFRAME_PVT_CREDS
 	fi
 	pkgname=$(echo $pkgfile | sed 's/.deb$//')
 	pkgname_public=$(echo $pkgname | cut -d '-' -f1-4,7,9-) #cutting away Debian-9.12
