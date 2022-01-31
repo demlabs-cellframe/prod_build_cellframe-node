@@ -45,9 +45,6 @@ pwd
 error=0
 mkdir -p packages
 
-if [[ ${CMAKE_PATH} != "" ]]; then
-	CMAKE_PATH=${CMAKE_PATH}/
-fi
 echo "Build for $ARCH_VERSION architectures"
 substitute_pkgname_postfix && mkdir -p build && cd build
 
