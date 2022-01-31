@@ -16,6 +16,7 @@ DAP_CFG="$DAP_PREFIX/etc/$DAP_APP_NAME.cfg"
 tar -C /opt/cellframe-node/etc -xf /opt/cellframe-node/share/cpython.tar.xz
 rm /opt/cellframe-node/share/cpython.tar.xz
 chmod +x /opt/cellframe-node/etc/bin/*
+
 # Check profile.d symlink
 
 [ -e "/etc/profile.d/$DAP_APP_NAME.sh" ] || ln -sf $DAP_PREFIX/share/profile.d/$DAP_APP_NAME.sh /etc/profile.d/$DAP_APP_NAME.sh
