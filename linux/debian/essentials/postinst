@@ -13,9 +13,10 @@ DAP_CFG="$DAP_PREFIX/etc/$DAP_APP_NAME.cfg"
 
 
 #unpack PYTHON_ENV
-tar -C /opt/cellframe-node/etc/ -xf /opt/cellframe-node/etc/cpython.tar.xz
-rm /opt/cellframe-node/etc/cpython.tar.xz
-
+if [ -e "opt/cellframe-node/etc/cpython.tar.xz" ]; then
+    tar -C /opt/cellframe-node/etc/ -xf /opt/cellframe-node/etc/cpython.tar.xz
+    rm /opt/cellframe-node/etc/cpython.tar.xz
+fi
 # Check profile.d symlink
 
 [ -e "/etc/profile.d/$DAP_APP_NAME.sh" ] || ln -sf $DAP_PREFIX/share/profile.d/$DAP_APP_NAME.sh /etc/profile.d/$DAP_APP_NAME.sh
