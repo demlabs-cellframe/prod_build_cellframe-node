@@ -14,9 +14,9 @@ DAP_CFG="$DAP_PREFIX/etc/$DAP_APP_NAME.cfg"
 
 #unpack PYTHON_ENV
 if [[ -e /opt/cellframe-node/share/cpython.tar.xz ]]; then 
-    rm -rf /opt/cellframe-node/etc/lib /opt/cellframe-node/etc/bin || true
+    rm -rf /opt/cellframe-node/etc/lib /opt/cellframe-node/etc/bin /opt/cellframe-node/var/python || true
     mkdir -p /opt/cellframe-node/var || true
-    tar -C /opt/cellframe-node/var -xf /opt/cellframe-node/share/cpython.tar.xz || true
+    tar -C /opt/cellframe-node -xf /opt/cellframe-node/share/cpython.tar.xz || true
     rm /opt/cellframe-node/share/cpython.tar.xz || true
 fi
 # Check profile.d symlink
