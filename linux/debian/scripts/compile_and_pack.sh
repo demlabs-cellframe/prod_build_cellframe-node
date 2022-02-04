@@ -7,9 +7,9 @@ substitute_pkgname_postfix() {
 		echo "variable is $variable"
 		export $variable
 	done
-	sed -i "/ ${CMAKE_PATH}cpack_SYSTEM_TYPE/s/\".*\"/\"$DistributorID\"/" CMakeLists.txt
-	sed -i "/ ${CMAKE_PATH}cpack_SYSTEM_VERSION/s/\".*\"/\"$Release\"/" CMakeLists.txt
-	sed -i "/ ${CMAKE_PATH}cpack_SYSTEM_CODENAME/s/\".*\"/\"$Codename\"/" CMakeLists.txt
+	sed -i "/ CPACK_SYSTEM_TYPE/s/\".*\"/\"$DistributorID\"/" CMakeLists.txt
+	sed -i "/ CPACK_SYSTEM_VERSION/s/\".*\"/\"$Release\"/" CMakeLists.txt
+	sed -i "/ CPACK_SYSTEM_CODENAME/s/\".*\"/\"$Codename\"/" CMakeLists.txt
 	export -n "DistributorID"
 	export -n "Release"
 	export -n "Codename"
