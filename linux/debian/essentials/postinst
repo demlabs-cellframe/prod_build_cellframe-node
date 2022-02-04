@@ -13,9 +13,11 @@ DAP_CFG="$DAP_PREFIX/etc/$DAP_APP_NAME.cfg"
 
 
 #unpack PYTHON_ENV
-if [ -e "opt/cellframe-node/etc/cpython.tar.xz" ]; then
-    tar -C /opt/cellframe-node/etc/ -xf /opt/cellframe-node/etc/cpython.tar.xz
-    rm /opt/cellframe-node/etc/cpython.tar.xz
+if [[ -e /opt/cellframe-node/share/cpython.tar.xz ]]; then 
+    rm -rf /opt/cellframe-node/etc/lib /opt/cellframe-node/etc/bin /opt/cellframe-node/var/python || true
+    mkdir -p /opt/cellframe-node/var || true
+    tar -C /opt/cellframe-node -xf /opt/cellframe-node/share/cpython.tar.xz || true
+    rm /opt/cellframe-node/share/cpython.tar.xz || true
 fi
 # Check profile.d symlink
 
@@ -147,9 +149,9 @@ else
     #chown -R $USERMAN:$USERMAN $DAP_PREFIX
     for filename in $(find $DAP_PREFIX | grep -v bugreport); do
         if [ -d $filename ]; then
-            chmod 0775 $filename || true
+            chmod 0775 $filename 2>/dev/null || true
         else
-            chmod 0664 $filename || true
+            chmod 0664 $filename 2>/dev/null || true
         fi
     done
     chmod 0774 $DAP_PREFIX/bin/* || true
