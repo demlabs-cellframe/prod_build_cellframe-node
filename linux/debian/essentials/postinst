@@ -11,7 +11,8 @@ DAP_CFG_TPL="$DAP_PREFIX/share/configs/$DAP_APP_NAME.cfg.tpl"
 DAP_CFG="$DAP_PREFIX/etc/$DAP_APP_NAME.cfg"
 
 #fixed link with python library
-ln -sf /usr/lib/x86_64-linux-gnu/libpython3.*.so.1.0 /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0
+
+[ -e "/usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0" ] || ln -sf /usr/lib/x86_64-linux-gnu/libpython3.*.so.1.0 /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0
 
 
 #unpack PYTHON_ENV
