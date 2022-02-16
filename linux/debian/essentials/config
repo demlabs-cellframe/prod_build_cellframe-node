@@ -38,6 +38,12 @@ reconfigure|configure)
    db_input critical cellframe-node/subzero_node_type || true 
    db_go || true 
 
+      db_input critical cellframe-node/kelvpn_minkowski_enabled || true 
+   db_go || true 
+
+   db_input critical cellframe-node/kelvpn_minkowski_type || true 
+   db_go || true 
+
 ;;
 *)
    echo "config called with unknown argument \`$1'" >&2
