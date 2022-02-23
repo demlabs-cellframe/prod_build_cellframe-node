@@ -76,7 +76,7 @@ Default: true
 Choices: true, false
 Type: select
 Description: SubZero: Enable network
- Kelvin Testnet: Enable network auto load on start
+ Subzero Testnet: Enable network auto load on start
 
 Template: cellframe-node/subzero_node_type
 Type: select
@@ -89,14 +89,13 @@ Description: SubZero: Node role
  master - allow to store values in chains and take comission, sync all shards that will need to be synced
  archive - Sync all the network
  root - Special predefined root nodes, usualy produces zerochain and act like archive as well
-
  
 Template: cellframe-node/kelvpn_minkowski_enabled
 Default: true
 Choices: true, false
 Type: select
 Description: Kelvpn Minkowski: Enable network
- Kelvin Testnet: Enable network auto load on start
+ Minkowski Testnet: Enable network auto load on start
 
 Template: cellframe-node/kelvpn_minkowski_node_type
 Type: select
