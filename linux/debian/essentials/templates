@@ -89,7 +89,7 @@ Description: SubZero: Node role
  master - allow to store values in chains and take comission, sync all shards that will need to be synced
  archive - Sync all the network
  root - Special predefined root nodes, usualy produces zerochain and act like archive as well
- 
+
 Template: cellframe-node/kelvpn_minkowski_enabled
 Default: true
 Choices: true, false

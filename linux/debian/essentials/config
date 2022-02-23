@@ -50,7 +50,7 @@ reconfigure|configure)
    db_input critical cellframe-node/kelvpn_minkowski_enabled || true 
    db_go || true 
 
-   db_get cellframe-node/kelvin_testnet_enabled
+   db_get cellframe-node/kelvpn_minkowski_enabled
    if [ "$RET" = "true" ]; then
       db_input critical cellframe-node/kelvpn_minkowski_node_type || true 
       db_go || true
