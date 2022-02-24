@@ -23,26 +23,38 @@ reconfigure|configure)
    db_input critical cellframe-node/core_t_enabled || true 
    db_go || true 
 
-   db_input critical cellframe-node/core_t_node_type || true 
-   db_go || true 
+   db_get cellframe-node/core_t_enabled
+   if [ "$RET" = "true" ]; then
+      db_input critical cellframe-node/core_t_node_type || true 
+      db_go || true
+   fi
 
    db_input critical cellframe-node/kelvin_testnet_enabled || true 
    db_go || true 
 
-   db_input critical cellframe-node/kelvin_testnet_node_type || true 
-   db_go || true
+   db_get cellframe-node/kelvin_testnet_enabled
+   if [ "$RET" = "true" ]; then
+      db_input critical cellframe-node/kelvin_testnet_node_type || true 
+      db_go || true
+   fi
 
    db_input critical cellframe-node/subzero_enabled || true 
    db_go || true 
 
-   db_input critical cellframe-node/subzero_node_type || true 
+   db_get cellframe-node/subzero_enabled
+   if [ "$RET" = "true" ]; then
+      db_input critical cellframe-node/subzero_node_type || true 
+      db_go || true
+   fi
+
+   db_input critical cellframe-node/kelvpn_minkowski_enabled || true 
    db_go || true 
 
-      db_input critical cellframe-node/kelvpn_minkowski_enabled || true 
-   db_go || true 
-
-   db_input critical cellframe-node/kelvpn_minkowski_type || true 
-   db_go || true 
+   db_get cellframe-node/kelvpn_minkowski_enabled
+   if [ "$RET" = "true" ]; then
+      db_input critical cellframe-node/kelvpn_minkowski_node_type || true 
+      db_go || true
+   fi
 
 ;;
 *)
