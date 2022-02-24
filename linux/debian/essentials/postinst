@@ -14,8 +14,8 @@ DAP_CFG="$DAP_PREFIX/etc/$DAP_APP_NAME.cfg"
 BUILD_PYTHON_VERSION=/usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0
 
 [ -h $BUILD_PYTHON_VERSION ] && rm $BUILD_PYTHON_VERSION
-STANDART_PYTHON_LIB=$(ls /usr/lib/x86_64-linux-gnu | grep "libpython3.*.so.1.0" | cut -d" " -f1 | head -n1)
-[ -e $BUILD_PYTHON_VERSION ] || ln -sf /usr/lib/x86_64-linux-gnu/$STANDART_PYTHON_LIB /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0
+#STANDART_PYTHON_LIB=$(ls /usr/lib/x86_64-linux-gnu | grep "libpython3.*.so.1.0" | cut -d" " -f1 | head -n1)
+#[ -e $BUILD_PYTHON_VERSION ] || ln -sf /usr/lib/x86_64-linux-gnu/$STANDART_PYTHON_LIB /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0
 
 
 #unpack PYTHON_ENV
@@ -182,7 +182,7 @@ else
         fi
     done
     chmod 0774 $DAP_PREFIX/bin/* || true
-    chmod 0777 $DAP_PREFIX/bin/$DAP_APP_NAME-cli || true
+    chmod 0777 $DAP_PREFIX/bin/$DAP_APP_NAME-cli $DAP_PREFIX/bin/pip3* $DAP_PREFIX/bin/python3* || true
     service cellframe-node start || true
     systemctl restart cellframe-node || true
     echo "[!] Done"
