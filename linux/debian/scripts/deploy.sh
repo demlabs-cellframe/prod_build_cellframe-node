@@ -34,7 +34,7 @@ for pkgfile in $PKGFILES; do
 	fi
 	pkgname=$(echo $pkgfile | sed 's/.deb$//')
 	pkgname_public=$(echo $pkgname | cut -d '-' -f1-4,7,8) #cutting away Debian-9.12
-	pkgname_weblink="$(echo $pkgname | cut -d '-' -f2,8 )-latest" #leaving only necessary entries
+	pkgname_weblink="$(echo $pkgname | cut -d '-' -f2,7 )-latest" #leaving only necessary entries
 	echo "Package name for public is $pkgname_public"
 	mv $pkgfile $wd/$PACKAGE_PATH/$pkgname.deb || { echo "[ERR] Something went wrong in publishing the package. Now aborting."; exit -4; }
 	CODENAME=$(echo $pkgname | rev | cut -d '-' -f1 | rev)
