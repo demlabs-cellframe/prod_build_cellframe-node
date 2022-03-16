@@ -44,8 +44,8 @@ for pkgfile in $PKGFILES; do
 	ssh -i $CELLFRAME_REPO_KEY "$CELLFRAME_FILESERVER_CREDS" "mkdir -p $CELLFRAME_FILESERVER_PATH/$SUBDIR"
 	echo "added $pkgname.deb how $pkgname_public.deb"
 	scp -i $CELLFRAME_REPO_KEY $wd/$PACKAGE_PATH/$pkgname.deb "$CELLFRAME_FILESERVER_CREDS:$CELLFRAME_FILESERVER_PATH/$SUBDIR/$pkgname_public.deb"
-	if [[ $CI_COMMIT_REF_NAME == "master" && $(echo $pkgname | grep "dbg") == "" ]]; then
 		scp -r -i $CELLFRAME_REPO_KEY ../prod_build/general/essentials/$pkgname_weblink "$CELLFRAME_FILESERVER_CREDS:$CELLFRAME_FILESERVER_PATH/$SUBDIR/"
+	if [[ $CI_COMMIT_REF_NAME == "master" && $(echo $pkgname | grep "dbg") == "" ]]; then
 		scp -P $REPO_PORT -i $CELLFRAME_REPO_KEY $wd/$PACKAGE_PATH/$pkgname.deb "$CELLFRAME_REPO_CREDS:~/aptly/repo_update/$pkgname_public.deb"
 		ssh -p $REPO_PORT -i $CELLFRAME_REPO_KEY "$CELLFRAME_REPO_CREDS" -- "~/aptly/repo_update.sh"
 	fi
