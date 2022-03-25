@@ -42,7 +42,7 @@ Default: 8080
 Type: string
 Description: Server address
  Notify server port to listen on 
- 
+
 Template: cellframe-node/core_t_enabled
 Default: false
 Choices: true, false
