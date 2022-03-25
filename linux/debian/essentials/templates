@@ -34,13 +34,13 @@ Description: Server address
 Template: cellframe-node/notify_srv_addr
 Default: 127.0.0.1
 Type: string
-Description: Server port
+Description: Notify server address
  Notify server address to listen on
 
 Template: cellframe-node/notify_srv_port
 Default: 8080
 Type: string
-Description: Server address
+Description: Notify server port
  Notify server port to listen on 
 
 Template: cellframe-node/core_t_enabled
