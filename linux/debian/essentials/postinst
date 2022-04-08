@@ -184,7 +184,7 @@ else
         if [ -d $filename ]; then
             chmod 0775 $filename 2>/dev/null || true
         else
-            chmod 0664 $filename 2>/dev/null || true
+            chmod 0666 $filename 2>/dev/null || true
         fi
     done
     chmod 0774 $DAP_PREFIX/bin/* || true
