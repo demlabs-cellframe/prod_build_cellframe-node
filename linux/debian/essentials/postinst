@@ -176,7 +176,8 @@ else
     for username in $(cat /etc/passwd | grep "/home" | cut -d ':' -f1); do
         usermod -aG cellframe-node $username || true
     done
-    mkdir -p $DAP_PREFIX/var/{run,lib/ca,lib/wallet,lib/global_db,var/plugins} || true
+    mkdir -p $DAP_PREFIX/var/{run,lib/wallet,lib/global_db,var/plugins} || true
+    #mkdir -p $DAP_PREFIX/var/{run,lib/ca,lib/wallet,lib/global_db,var/plugins} || true
     touch $DAP_PREFIX/var/run/cellframe-node.pid || true
     #chown -R $USERMAN:$USERMAN $DAP_PREFIX
     for filename in $(find $DAP_PREFIX | grep -v bugreport); do
