@@ -186,8 +186,8 @@ else
             chmod 0664 $filename 2>/dev/null || true
         fi
     done
-    chmod 0660 $DAP_CFG
-    chmod 0660 $DAP_CFG_TPL
+    chmod 0666 $DAP_CFG
+    chmod 0666 $DAP_CFG_TPL
     chmod 0774 $DAP_PREFIX/bin/* || true
     chmod 0777 $DAP_PREFIX/bin/$DAP_APP_NAME-cli $DAP_PREFIX/bin/pip3* $DAP_PREFIX/bin/python3* || true
     service cellframe-node start || true
