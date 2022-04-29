@@ -61,49 +61,6 @@ sed -i "s/{NOTIFY_SRV_ADDR}/$RET/g" $DAP_CFG  || true
 db_get cellframe-node/notify_srv_port || true
 sed -i "s/{NOTIFY_SRV_PORT}/$RET/g" $DAP_CFG  || true
 
-# Init core testnet
-NET_NAME="core-t"
-
-db_get cellframe-node/core_t_enabled || true
-if [ "$RET" = "true" ]; then
-    DAP_CFG_NET="$DAP_PREFIX/etc/network/$NET_NAME.cfg"
-    DAP_CFG_NET_TPL="$DAP_PREFIX/share/configs/network/$NET_NAME.cfg.tpl"
-    DAP_NET_CFG=""
-    if [ -e "$DAP_CFG_NET" ]; then
-	DAP_NET_CFG="$DAP_PREFIX/etc/network/$NET_NAME.cfg.dpkg-new"
-    else
-	DAP_NET_CFG="$DAP_PREFIX/etc/network/$NET_NAME.cfg"
-    fi
-
-    cat $DAP_CFG_NET_TPL > $DAP_NET_CFG || true
-    db_get cellframe-node/core_t_node_type || true
-    NODE_TYPE=$RET
-    sed -i "s/{NODE_TYPE}/$NODE_TYPE/g" $DAP_NET_CFG  || true
-    echo "[*] Enabled core testnet"
-fi
-
-
-
-# Init kelvin-testnet
-NET_NAME="kelvin-testnet"
-
-db_get cellframe-node/kelvin_testnet_enabled || true
-if [ "$RET" = "true" ]; then
-    DAP_CFG_NET="$DAP_PREFIX/etc/network/$NET_NAME.cfg"
-    DAP_CFG_NET_TPL="$DAP_PREFIX/share/configs/network/$NET_NAME.cfg.tpl"
-    DAP_NET_CFG=""
-    if [ -e "$DAP_CFG_NET" ]; then
-	DAP_NET_CFG="$DAP_PREFIX/etc/network/$NET_NAME.cfg.dpkg-new"
-    else
-	DAP_NET_CFG="$DAP_PREFIX/etc/network/$NET_NAME.cfg"
-    fi
-
-    cat $DAP_CFG_NET_TPL > $DAP_NET_CFG || true
-    db_get cellframe-node/kelvin_testnet_node_type || true
-    NODE_TYPE=$RET
-    sed -i "s/{NODE_TYPE}/$NODE_TYPE/g" $DAP_NET_CFG  || true
-    echo "[*] Enabled kelvin testnet"
-fi
 
 # Init subzero
 NET_NAME="subzero"
@@ -126,7 +83,28 @@ if [ "$RET" = "true" ]; then
     echo "[*] Enabled subzero"
 fi
 
-# Init subzero
+# Init mileena
+NET_NAME="mileena"
+
+db_get cellframe-node/mileena_enabled || true
+if [ "$RET" = "true" ]; then
+    DAP_CFG_NET="$DAP_PREFIX/etc/network/$NET_NAME.cfg"
+    DAP_CFG_NET_TPL="$DAP_PREFIX/share/configs/network/$NET_NAME.cfg.tpl"
+    DAP_NET_CFG=""
+    if [ -e "$DAP_CFG_NET" ]; then
+	DAP_NET_CFG="$DAP_PREFIX/etc/network/$NET_NAME.cfg.dpkg-new"
+    else
+	DAP_NET_CFG="$DAP_PREFIX/etc/network/$NET_NAME.cfg"
+    fi
+
+    cat $DAP_CFG_NET_TPL > $DAP_NET_CFG || true
+    db_get cellframe-node/mileena_node_type || true
+    NODE_TYPE=$RET
+    sed -i "s/{NODE_TYPE}/$NODE_TYPE/g" $DAP_NET_CFG  || true
+    echo "[*] Enabled mileena"
+fi
+
+# Init Minkowski
 NET_NAME="kelvpn-minkowski"
 
 db_get cellframe-node/kelvpn_minkowski_enabled || true
