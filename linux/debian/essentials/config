@@ -26,12 +26,6 @@ reconfigure|configure)
    db_input critical cellframe-node/notify_srv_port || true 
    db_go || true 
 
-   db_get cellframe-node/kelvin_testnet_enabled
-   if [ "$RET" = "true" ]; then
-      db_input critical cellframe-node/kelvin_testnet_node_type || true 
-      db_go || true
-   fi
-
    db_input critical cellframe-node/subzero_enabled || true 
    db_go || true 
 
