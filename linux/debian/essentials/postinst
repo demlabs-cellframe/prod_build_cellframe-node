@@ -61,7 +61,6 @@ sed -i "s/{NOTIFY_SRV_ADDR}/$RET/g" $DAP_CFG  || true
 db_get cellframe-node/notify_srv_port || true
 sed -i "s/{NOTIFY_SRV_PORT}/$RET/g" $DAP_CFG  || true
 
-
 # Init subzero
 NET_NAME="subzero"
 
@@ -149,6 +148,15 @@ fi
 mkdir -p $DAP_PREFIX/var/log     || true
 mkdir -p $DAP_PREFIX/var/plugins || true
 
+#Set up Python plugins
+db_get cellframe-node/enable_python_plugins || true
+if [ "$RET" = "true" ]; then
+    sed -i 's/#\[plugins\]/\[plugins\]/g' $DAP_CFG || true
+    sed -i 's/#py_load=.*/py_load=true/g' $DAP_CFG || true
+    db_get cellframe-node/python_plugins_path || true
+    sed -i "s|#py_path=.*|py_path=$RET|g" $DAP_CFG || true
+    echo "[*] Enabled Python plugins"
+fi
 
 cat /etc/passwd| grep cellframe-node || adduser --system --no-create-home --group --home /opt/cellframe-node cellframe-node || true
 
