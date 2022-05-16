@@ -6,7 +6,11 @@
 check_packages() {
 
 	IFS=" "
+	echo "[DBG] PKG_DEPS: $PKG_DEPS"
+
 	local PKG_DEPPIES=$(echo $PKG_DEPS | sed 's/\"//g')
+	echo "[DBG] PKG_DEPS: $PKG_DEPPIES"
+	
 	for element in "$PKG_DEPPIES"; do
 		echo "[DEBUGGA] Checking if $element is installed"
 		if ! dpkg-query -s $element; then 
