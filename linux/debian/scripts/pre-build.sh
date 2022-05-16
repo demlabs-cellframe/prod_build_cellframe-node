@@ -1,6 +1,6 @@
 #!/bin/bash
 
-
+. 
 #installing required dependencies
 
 check_packages() {
@@ -10,7 +10,7 @@ check_packages() {
 
 	local PKG_DEPPIES=$(echo $PKG_DEPS | sed 's/\"//g')
 	echo "[DBG] PKG_DEPS: $PKG_DEPPIES"
-	
+
 	for element in "$PKG_DEPPIES"; do
 		echo "[DEBUGGA] Checking if $element is installed"
 		if ! dpkg-query -s $element; then 
@@ -43,12 +43,13 @@ install_dependencies() {
 
 }
 
-install_dependencies
 
 #. prod_build/general/install_dependencies
 . prod_build/general/pre-build.sh #VERSIONS and git
 export_variables "prod_build/general/conf/*"
 export_variables "prod_build/linux/debian/conf/*"
+
+install_dependencies
 
 VERSION_STRING=$(echo $VERSION_FORMAT | sed "s/\"//g" ) #Removing quotes
 VERSION_ENTRIES=$(echo $VERSION_ENTRIES | sed "s/\"//g" )

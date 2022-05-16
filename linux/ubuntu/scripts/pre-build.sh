@@ -69,12 +69,14 @@ install_dependencies() {
 #
 #}
 
-install_dependencies
 
 #. prod_build/general/install_dependencies
 . prod_build/general/pre-build.sh #VERSIONS and git
 export_variables "prod_build/general/conf/*"
 export_variables "prod_build/linux/ubuntu/conf/*"
+
+install_dependencies
+
 
 VERSION_STRING=$(echo $VERSION_FORMAT | sed "s/\"//g" ) #Removing quotes
 VERSION_ENTRIES=$(echo $VERSION_ENTRIES | sed "s/\"//g" )
