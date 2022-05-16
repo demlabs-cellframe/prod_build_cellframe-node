@@ -28,6 +28,7 @@ install_dependencies() {
 		echo "[INF] All required packages are installed"
 	else
 		echo ""
+		/usr/bin/apt-get update
 		local PKG_DEPPIES=$(echo $PKG_DEPS | sed 's/\"//g')
 		echo "[DEBUGGA] Attempting to install $PKG_DEPPIES"
 		if /usr/bin/apt-get install -y $PKG_DEPPIES ; then
