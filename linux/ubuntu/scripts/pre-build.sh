@@ -30,7 +30,7 @@ check_packages() {
 
 install_dependencies() {
 
-	if check_packages >> /dev/null; then
+	if check_packages; then
 		echo "[INF] All required packages are installed"
 	else
 		echo ""
@@ -68,6 +68,8 @@ install_dependencies() {
 #echo $text
 #
 #}
+
+install_dependencies
 
 #. prod_build/general/install_dependencies
 . prod_build/general/pre-build.sh #VERSIONS and git

@@ -1,1 +1,1 @@
-PKG_DEPS="libjson-c-dev libsqlite3-dev libmagic-dev libcurl4-gnutls-dev traceroute libpq-dev libzip-dev libz-dev"
+PKG_DEPS="libjson-c-dev libsqlite3-dev libmagic-dev libcurl4-gnutls-dev traceroute libpq-dev libzip-dev zlib1g-dev"
