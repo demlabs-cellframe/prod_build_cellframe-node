@@ -1,1 +1,1 @@
-PKG_DEPS="cmake libjson-c-dev libsqlite3-dev libmagic-dev libcurl4-gnutls-dev traceroute libz-dev"
+PKG_DEPS="cmake libsqlite3-dev libmagic-dev libcurl4-gnutls-dev traceroute libz-dev"
