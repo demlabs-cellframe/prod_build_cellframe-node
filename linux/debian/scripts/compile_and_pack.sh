@@ -56,11 +56,11 @@ if [[ $ARCH_VERSION == "arm" ]]; then
 	${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARM64_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARM64_CXX_COMPILER -DCMAKE_TARGET_ARCH="arm64" -DCMAKE_BUILD_TYPE=Debug ../ && make  && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 	unset LD_LIBRARY_PATH
 
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_ARMHF
-	${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARMHF_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARMHF_CXX_COMPILER -DCMAKE_TARGET_ARCH="armhf" .. && make  && \
-	${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * && \
-	${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARMHF_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARMHF_CXX_COMPILER -DCMAKE_TARGET_ARCH="armhf" -DCMAKE_BUILD_TYPE=Debug ../ && make  && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
-	unset LD_LIBRARY_PATH
+	#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_ARMHF
+	#${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARMHF_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARMHF_CXX_COMPILER -DCMAKE_TARGET_ARCH="armhf" .. && make  && \
+	#${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * && \
+	#${CMAKE_PATH}cmake -DCMAKE_C_COMPILER=$ARMHF_C_COMPILER -DCMAKE_CXX_COMPLIER=$ARMHF_CXX_COMPILER -DCMAKE_TARGET_ARCH="armhf" -DCMAKE_BUILD_TYPE=Debug ../ && make  && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
+	#unset LD_LIBRARY_PATH
 fi
 
 if [[ $ARCH_VERSION == "amd64" ]]; then
