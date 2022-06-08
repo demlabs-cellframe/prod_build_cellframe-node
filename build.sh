@@ -23,20 +23,14 @@ fi
 # freebsb? openbsd? netbsd? openwrt
 # ios (ipad/iphone) aarch64-ios-darwin
 
-BUILD_ARCH=$1
+BUILD_ARCH="${1:-x86_64-linux-gnu}"
+BUILD_TYPE="${2:-release}"
 
-echo "Build for $BUILD_ARCH architecture"
+echo "Build [${BUILD_TYPE}] binaries for [$BUILD_ARCH] architecture"
 
 cd ${PWD}
-echo "Build release"
-mkdir -p build_release
-cd ./build_release	
-cmake ../ 
-make -j$(nproc)
 
-сd ${PWD}
-echo "Build debug"
-mkdir -p ./build_debug
-cd ../build_debug
-cmake ../ -DCMAKE_BUILD_TYPE=Debug
+mkdir -p ./build
+cd ./build
+cmake ../ 
 make -j$(nproc)
