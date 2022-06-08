@@ -27,7 +27,7 @@ BUILD_ARCH=$1
 
 echo "Build for $BUILD_ARCH architecture"
 
-сd ${PWD}
+cd ${PWD}
 echo "Build release"
 mkdir -p build_release
 cd ./build_release	
