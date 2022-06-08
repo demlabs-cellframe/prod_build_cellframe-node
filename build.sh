@@ -32,11 +32,11 @@ echo "Build release"
 mkdir -p build_release
 cd ./build_release	
 cmake ../ 
-make
+make -j$(nproc)
 
 сd ${PWD}
 echo "Build debug"
 mkdir -p ./build_debug
 cd ../build_debug
 cmake ../ -DCMAKE_BUILD_TYPE=Debug
-make
+make -j$(nproc)
