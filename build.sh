@@ -30,10 +30,16 @@ BUILD_DIR=${PWD}/build_${BUILD_ARCH}_${BUILD_TYPE}
 
 echo "Build [${BUILD_TYPE}] binaries for [$BUILD_ARCH] architecture in [${BUILD_DIR}]"
 
+#make build directory and cd in 
 mkdir -p ${BUILD_DIR}
-
 cd ${BUILD_DIR}
 
-cmake ../ 
+#define DEBUG for build if neccessary
+if [ "${BUILD_TYPE}" = "debug" ]; then
+    cmake ../ -DCMAKE_BUILD_TYPE=Debug
+else
+    cmake ../ 
+fi
 
+#call make to do the build process
 make -j$(nproc)

@@ -16,7 +16,7 @@ BUILD_DIR=${PWD}/build_${BUILD_ARCH}_${BUILD_TYPE}
 
 echo "Pack [${BUILD_TYPE}] binaries for [$BUILD_ARCH] architecture from [${BUILD_DIR}] in {$PACKAGE_TYPE} package."
 
-ls ${PWD}
 cd ${BUILD_DIR}
 
+#do cpack, it should care all other things and generate a deb file
 cpack .
