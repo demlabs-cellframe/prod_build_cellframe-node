@@ -11,6 +11,7 @@ fi
 #build architecture 
 #- aarch64-apple-darvin
 #- aarch64-linux-gnu
+#- armhf-linux-gnu
 #- armv7-linux-gnu
 #- x86_64-apple-darvin  
 #- x86_64-windows-mingw

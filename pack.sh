@@ -11,13 +11,12 @@ fi
 
 BUILD_ARCH="${1:-x86_64-linux-gnu}"
 BUILD_TYPE="${2:-release}"
+PACKAGE_TYPE="${3:-deb}"
 BUILD_DIR=${PWD}/build_${BUILD_ARCH}_${BUILD_TYPE}
 
+echo "Pack [${BUILD_TYPE}] binaries for [$BUILD_ARCH] architecture from [${BUILD_DIR}] in {$PACKAGE_TYPE} package."
 
-echo "Pack [${BUILD_TYPE}] binaries for [$BUILD_ARCH] architecture from [${BUILD_DIR}]"
-
-
-
+ls ${PWD}
 cd ${BUILD_DIR}
 
 cpack .
