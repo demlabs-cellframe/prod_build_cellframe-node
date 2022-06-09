@@ -25,12 +25,14 @@ fi
 
 BUILD_ARCH="${1:-x86_64-linux-gnu}"
 BUILD_TYPE="${2:-release}"
+BUILD_DIR=${PWD}/build_${BUILD_ARCH}_${BUILD_TYPE}
 
-echo "Build [${BUILD_TYPE}] binaries for [$BUILD_ARCH] architecture"
+echo "Build [${BUILD_TYPE}] binaries for [$BUILD_ARCH] architecture in [${BUILD_DIR}]"
 
-cd ${PWD}
+mkdir -p ${BUILD_DIR}
 
-mkdir -p ./build
-cd ./build
+cd ${BUILD_DIR}
+
 cmake ../ 
+
 make -j$(nproc)
