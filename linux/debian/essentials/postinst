@@ -184,7 +184,7 @@ else
         usermod -aG cellframe-node ${username} || true
     done
     
-    mkdir -p ${DAP_PREFIX}/var/{run,lib/wallet,lib/global_db,var/plugins} || true
+    mkdir -p ${DAP_PREFIX}/var/{run,lib/wallet,lib/global_db,var/lib/plugins} || true
     touch ${DAP_PREFIX}/var/run/cellframe-node.pid || true
     
     for filename in $(find ${DAP_PREFIX} | grep -v bugreport); do
