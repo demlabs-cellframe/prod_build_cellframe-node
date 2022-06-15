@@ -28,7 +28,7 @@ BUILD_ARCH="${1:-x86_64-linux-gnu}"
 BUILD_TYPE="${2:-release}"
 BUILD_DIR=${PWD}/build_${BUILD_ARCH}_${BUILD_TYPE}
 
-echo "Build [${BUILD_TYPE}] binaries for [$BUILD_ARCH] architecture in [${BUILD_DIR}]"
+echo "Build [${BUILD_TYPE}] binaries for [$BUILD_ARCH] architecture in [${BUILD_DIR}] on $(nproc) threads."
 
 #make build directory and cd in 
 mkdir -p ${BUILD_DIR}
@@ -36,10 +36,10 @@ cd ${BUILD_DIR}
 
 #define DEBUG for build if neccessary
 if [ "${BUILD_TYPE}" = "debug" ]; then
-    cmake ../ -DCMAKE_BUILD_TYPE=Debug
+    cmake ../ -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TARGET_ARCH=$BUILD_ARCH
 else
-    cmake ../ 
+    cmake ../ -DCMAKE_TARGET_ARCH=$BUILD_ARCH
 fi
 
 #call make to do the build process
-make -j$(nproc)
+make -j"$(nproc)"

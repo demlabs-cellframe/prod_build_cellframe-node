@@ -200,7 +200,7 @@ else
     chmod 0774 ${DAP_PREFIX}/bin/* || true
 
     #set python permissions    
-    find ${DAP_PREFIX}/bin/python -type d -exec chmod 755 {} +
+    find ${DAP_PREFIX}/bin/python -type d -exec chmod 755 {} + || true
     chmod 774 ${DAP_PREFIX}/bin/python/bin/*
     
 
