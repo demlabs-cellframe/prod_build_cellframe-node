@@ -10,23 +10,6 @@ DAP_CFG_TPL="${DAP_PREFIX}/share/configs/${DAP_APP_NAME}.cfg.tpl"
 # Store write config to new if present smth
 DAP_CFG="${DAP_PREFIX}/etc/${DAP_APP_NAME}.cfg"
 
-#fixed link with python library
-#BUILD_PYTHON_VERSION=/usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0
-
-#[ -h $BUILD_PYTHON_VERSION ] && rm $BUILD_PYTHON_VERSION
-#STANDART_PYTHON_LIB=$(ls /usr/lib/x86_64-linux-gnu | grep "libpython3.*.so.1.0" | cut -d" " -f1 | head -n1)
-#[ -e $BUILD_PYTHON_VERSION ] || ln -sf /usr/lib/x86_64-linux-gnu/$STANDART_PYTHON_LIB /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1.0
-
-
-#unpack PYTHON_ENV
-#if [[ -e /opt/cellframe-node/share/cpython.tar.xz ]]; then 
-#    rm -rf /opt/cellframe-node/etc/lib /opt/cellframe-node/etc/bin /opt/cellframe-node/var/python || true
-#    mkdir -p /opt/cellframe-node/var || true
-#    tar -C /opt/cellframe-node -xf /opt/cellframe-node/share/cpython.tar.xz || true
-#    rm /opt/cellframe-node/share/cpython.tar.xz || true
-#fi
-# Check profile.d symlink
-
 [ -e "/etc/profile.d/${DAP_APP_NAME}.sh" ] || ln -sf ${DAP_PREFIX}/share/profile.d/${DAP_APP_NAME}.sh /etc/profile.d/${DAP_APP_NAME}.sh
 
 # Init node config
@@ -69,6 +52,7 @@ if [ "${RET}" = "true" ]; then
     DAP_CFG_NET="${DAP_PREFIX}/etc/network/${NET_NAME}.cfg"
     DAP_CFG_NET_TPL="${DAP_PREFIX}/share/configs/network/${NET_NAME}.cfg.tpl"
     DAP_NET_CFG=""
+    
     if [ -e "$DAP_CFG_NET" ]; then
 	DAP_NET_CFG="${DAP_PREFIX}/etc/network/${NET_NAME}.cfg.dpkg-new"
     else
@@ -90,6 +74,7 @@ if [ "$RET" = "true" ]; then
     DAP_CFG_NET="${DAP_PREFIX}/etc/network/${NET_NAME}.cfg"
     DAP_CFG_NET_TPL="${DAP_PREFIX}/share/configs/network/${NET_NAME}.cfg.tpl"
     DAP_NET_CFG=""
+    
     if [ -e "${DAP_CFG_NET}" ]; then
 	DAP_NET_CFG="${DAP_PREFIX}/etc/network/${NET_NAME}.cfg.dpkg-new"
     else
@@ -111,6 +96,7 @@ if [ "${RET}" = "true" ]; then
     DAP_CFG_NET="${DAP_PREFIX}/etc/network/${NET_NAME}.cfg"
     DAP_CFG_NET_TPL="${DAP_PREFIX}/share/configs/network/${NET_NAME}.cfg.tpl"
     DAP_NET_CFG=""
+    
     if [ -e "$DAP_CFG_NET" ]; then
 	DAP_NET_CFG="${DAP_PREFIX}/etc/network/${NET_NAME}.cfg.dpkg-new"
     else
@@ -121,7 +107,7 @@ if [ "${RET}" = "true" ]; then
     db_get cellframe-node/kelvpn_minkowski_node_type || true
     NODE_TYPE=${RET}
     sed -i "s/{NODE_TYPE}/${NODE_TYPE}/g" ${DAP_NET_CFG}  || true
-    echo "[*] Enabled subzero"
+    echo "[*] Enabled kelvpn-minkowski"
 fi
 
 # Init Backbone
@@ -132,6 +118,7 @@ if [ "${RET}" = "true" ]; then
     DAP_CFG_NET="${DAP_PREFIX}/etc/network/${NET_NAME}.cfg"
     DAP_CFG_NET_TPL="${DAP_PREFIX}/share/configs/network/${NET_NAME}.cfg.tpl"
     DAP_NET_CFG=""
+    
     if [ -e "${DAP_CFG_NET}" ]; then
 	DAP_NET_CFG="${DAP_PREFIX}/etc/network/${NET_NAME}.cfg.dpkg-new"
     else
@@ -145,9 +132,6 @@ if [ "${RET}" = "true" ]; then
     echo "[*] Enabled Backbone"
 fi
 
-mkdir -p ${DAP_PREFIX}/var/log     || true
-mkdir -p ${DAP_PREFIX}/var/plugins || true
-
 #Set up Python plugins
 db_get cellframe-node/enable_python_plugins || true
 if [ "${RET}" = "true" ]; then
@@ -158,34 +142,31 @@ if [ "${RET}" = "true" ]; then
     echo "[*] Enabled Python plugins"
 fi
 
-cat /etc/passwd| grep cellframe-node || adduser --system --no-create-home --group --home /opt/cellframe-node cellframe-node || true
+if [ $(cat /etc/passwd | grep ${DAP_APP_NAME}) ] ; then
+    usermod ${DAP_APP_NAME} -s /bin/false > /dev/null || true # Let's change the default shell just in case
+else
+    echo "[*] Add user ${DAP_APP_NAME}"
+    adduser --system --no-create-home --group --home /opt/${DAP_APP_NAME} ${DAP_APP_NAME} --shell /bin/false > /dev/null || true
+fi
 
 echo "[*] Check /etc/systemd/system/${DAP_APP_NAME}.service file..."
 if [ -e /etc/systemd/system/${DAP_APP_NAME}.service ]; then
     echo "[*] Restarting ${DAP_APP_NAME} to implement changes"
-    systemctl --system stop ${DAP_APP_NAME}  >> /dev/null|| true
+    systemctl stop ${DAP_APP_NAME}  >> /dev/null || true
     echo "[*] Stopped ${DAP_APP_NAME}"
     systemctl daemon-reload || true
-    systemctl --system start ${DAP_APP_NAME} || true
+    systemctl start ${DAP_APP_NAME} || true
     echo "[*] Started ${DAP_APP_NAME}"
 else
-    echo "[!] Installing ${DAP_APP_NAME} as systemd service (haven't found /etc/systemd/system/${DAP_APP_NAME}.service)"
+    echo "[!] Installing ${DAP_APP_NAME} as systemd service"
     ln -sf $DAP_PREFIX/share/${DAP_APP_NAME}.service /etc/systemd/system/${DAP_APP_NAME}.service || true
-    systemctl --system enable ${DAP_PREFIX}/share/${DAP_APP_NAME}.service || true
-
-    echo "[ ] Execute 'systemctl start ${DAP_APP_NAME}' to start ${DAP_APP_NAME} service"
-
-    #USERMAN=`users | awk '{print $1}'`
-    echo "[ ] Enabling logrotate"
+    systemctl enable ${DAP_PREFIX}/share/${DAP_APP_NAME}.service || true
+    echo "[*] Enabling logrotate"
     ln -sf ${DAP_PREFIX}/share/logrotate/${DAP_APP_NAME} /etc/logrotate.d/${DAP_APP_NAME} || true
-    adduser --system --no-create-home --group --home /opt/cellframe-node cellframe-node || true
+
+    mkdir -p ${DAP_PREFIX}/var/{run,lib/wallet,lib/global_db,lib/plugins,log} || true
     
-    for username in $(cat /etc/passwd | grep "/home" | cut -d ':' -f1); do
-        usermod -aG cellframe-node ${username} || true
-    done
-    
-    mkdir -p ${DAP_PREFIX}/var/{run,lib/wallet,lib/global_db,var/lib/plugins} || true
-    touch ${DAP_PREFIX}/var/run/cellframe-node.pid || true
+    touch ${DAP_PREFIX}/var/run/${DAP_APP_NAME}.pid || true
     
     for filename in $(find ${DAP_PREFIX} | grep -v bugreport); do
         if [ -d ${filename} ]; then
@@ -202,9 +183,8 @@ else
     #set python permissions    
     find ${DAP_PREFIX}/bin/python -type d -exec chmod 755 {} +
     chmod 774 ${DAP_PREFIX}/bin/python/bin/*
-    
-
-    service cellframe-node start || true
-    systemctl restart cellframe-node || true
+    chown -R ${DAP_APP_NAME}: ${DAP_PREFIX}
+    echo "[*] Starting ${DAP_APP_NAME} service"
+    systemctl start ${DAP_APP_NAME} || true
     echo "[!] Done"
 fi
