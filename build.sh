@@ -9,22 +9,15 @@ else
 fi
 
 #build architecture 
-#- aarch64-apple-darvin
-#- aarch64-linux-gnu
-#- armhf-linux-gnu
-#- armv7-linux-gnu
-#- x86_64-apple-darvin  
-#- x86_64-windows-mingw
-#- x86_64-linux-gnu
-#- i686-linux-gnu
-#- aarch64-android
-#- armv7-android
-#- armv6-android
+#- amd64-darvin
+#- amd64-linux
+#- armhf-linux
+#- armv7-linux
 
 # freebsb? openbsd? netbsd? openwrt
 # ios (ipad/iphone) aarch64-ios-darwin
 
-BUILD_ARCH="${1:-x86_64-linux-gnu}"
+BUILD_ARCH="${1:-amd64-linux}"
 BUILD_TYPE="${2:-release}"
 BUILD_DIR=${PWD}/build_${BUILD_ARCH}_${BUILD_TYPE}
 
