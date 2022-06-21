@@ -149,14 +149,12 @@ else
     adduser --system --no-create-home --group --home /opt/${DAP_APP_NAME} ${DAP_APP_NAME} --shell /bin/false > /dev/null || true
 fi
 
-echo "[*] Check /etc/systemd/system/${DAP_APP_NAME}.service file..."
+echo "[*] Check if /etc/systemd/system/${DAP_APP_NAME}.service file is available..."
 if [ -e /etc/systemd/system/${DAP_APP_NAME}.service ]; then
-    echo "[*] Restarting ${DAP_APP_NAME} to implement changes"
-    systemctl stop ${DAP_APP_NAME}  >> /dev/null || true
-    echo "[*] Stopped ${DAP_APP_NAME}"
+    echo "[*] File found, restarting ${DAP_APP_NAME} to implement changes"
     systemctl daemon-reload || true
     systemctl start ${DAP_APP_NAME} || true
-    echo "[*] Started ${DAP_APP_NAME}"
+    echo "[!] Done"
 else
     echo "[!] Installing ${DAP_APP_NAME} as systemd service"
     ln -sf $DAP_PREFIX/share/${DAP_APP_NAME}.service /etc/systemd/system/${DAP_APP_NAME}.service || true
@@ -182,9 +180,11 @@ else
 
     #set python permissions    
     find ${DAP_PREFIX}/bin/python -type d -exec chmod 755 {} +
-    chmod 774 ${DAP_PREFIX}/bin/python/bin/*
+    chmod 774 ${DAP_PREFIX}/bin/python/bin/* || true
     chown -R ${DAP_APP_NAME}: ${DAP_PREFIX}
     echo "[*] Starting ${DAP_APP_NAME} service"
     systemctl start ${DAP_APP_NAME} || true
     echo "[!] Done"
 fi
+
+exit 0

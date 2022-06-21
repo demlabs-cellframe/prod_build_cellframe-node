@@ -1,17 +1,40 @@
-#! /bin/bash -e
-if [ "$1" == "purge" ] && [ -e /usr/share/debconf/confmodule ] ; then
-. /usr/share/debconf/confmodule
-db_purge
-fi
-GROUP_RM="cellframe-node"
+#!/bin/bash -e
 
-systemctl stop cellframe-node || true
-systemctl disable cellframe-node || true
+PRODUCT_NAME="cellframe-node"
+PRODUCT_PATH="/opt/${PRODUCT_NAME}"
+GDB_PATH=`cat ${PRODUCT_PATH}/etc/${PRODUCT_NAME}.cfg | grep -oP "^dap_global_db_path=\K.*"`
+CONFFILES="${PRODUCT_PATH}/etc/"
 
-#for username in `cat /etc/passwd | grep "/home" | cut -d ':' -f1`; do
-#  gpasswd -d $username $GROUP_RM || true
-#done
-#rm -r /opt/cellframe-node || true
-#groupdel cellframe-node || true
-#userdel cellframe-node || true
 
+case "$1" in
+    purge)
+    # Purge database
+    if [ -e /usr/share/debconf/confmodule ] ; then
+        . /usr/share/debconf/confmodule
+        db_purge
+    fi
+    # Remove user and group
+    echo "[*] Removing user cellframe-node"
+    userdel ${PRODUCT_NAME} > /dev/null || true
+    echo "[*] Removing group cellframe-node"
+    groupdel ${PRODUCT_NAME} > /dev/null || true
+
+    # Remove configuration file, logs and at least gdb path for now on purge
+    echo "[*] Removing configuration files for ${PRODUCT_NAME}"
+    rm -rf ${CONFFILES} || true
+    echo "[*] Removing log files for ${PRODUCT_NAME}"
+    rm -rf ${PRODUCT_PATH}/var/log || true
+    echo "[*] Removing databases for ${PRODUCT_NAME}"
+    rm -rf ${GDB_PATH} || true
+    ;;
+
+    remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0
