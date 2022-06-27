@@ -1,9 +1,11 @@
 #!/bin/bash -e
 
-PRODUCT_NAME="cellframe-node"
-PRODUCT_PATH="/opt/${PRODUCT_NAME}"
-GDB_PATH=`cat ${PRODUCT_PATH}/etc/${PRODUCT_NAME}.cfg | grep -oP "^dap_global_db_path=\K.*"`
-CONFFILES="${PRODUCT_PATH}/etc/"
+DAP_CHAINS_NAME="cellframe"
+DAP_APP_NAME="${DAP_CHAINS_NAME}-node"
+DAP_PREFIX="/opt/${DAP_APP_NAME}"
+
+GDB_PATH=`cat ${DAP_PREFIX}/etc/${DAP_APP_NAME}.cfg | grep -oP "^dap_global_db_path=\K.*"`
+CONFFILES="${DAP_PREFIX}/etc/"
 
 
 case "$1" in
@@ -15,16 +17,16 @@ case "$1" in
     fi
     # Remove user and group
     echo "[*] Removing user cellframe-node"
-    userdel ${PRODUCT_NAME} > /dev/null || true
+    userdel ${DAP_APP_NAME} > /dev/null || true
     echo "[*] Removing group cellframe-node"
-    groupdel ${PRODUCT_NAME} > /dev/null || true
+    groupdel ${DAP_APP_NAME} > /dev/null || true
 
     # Remove configuration file, logs and at least gdb path for now on purge
-    echo "[*] Removing configuration files for ${PRODUCT_NAME}"
+    echo "[*] Removing configuration files for ${DAP_APP_NAME}"
     rm -rf ${CONFFILES} || true
-    echo "[*] Removing log files for ${PRODUCT_NAME}"
-    rm -rf ${PRODUCT_PATH}/var/log || true
-    echo "[*] Removing databases for ${PRODUCT_NAME}"
+    echo "[*] Removing log files for ${DAP_APP_NAME}"
+    rm -rf ${DAP_PREFIX}/var/log || true
+    echo "[*] Removing databases for ${DAP_APP_NAME}"
     rm -rf ${GDB_PATH} || true
     ;;
 

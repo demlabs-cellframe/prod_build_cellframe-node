@@ -176,7 +176,7 @@ else
 
     chmod 0666 ${DAP_CFG}
     chmod 0666 ${DAP_CFG_TPL}
-    chmod 0774 ${DAP_PREFIX}/bin/* || true
+    chmod 0775 ${DAP_PREFIX}/bin/* || true
 
     #set python permissions    
     find ${DAP_PREFIX}/bin/python -type d -exec chmod 755 {} +
