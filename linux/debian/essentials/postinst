@@ -177,7 +177,12 @@ else
 
     #USERMAN=`users | awk '{print $1}'`
     echo "[ ] Enabling logrotate"
+    chmod 644  $DAP_PREFIX/share/logrotate/$DAP_APP_NAME || true
+    ln -sf $DAP_PREFIX/share/logrotate/logrotate.timer /etc/systemd/system/logrotate.timer || true
     ln -sf $DAP_PREFIX/share/logrotate/$DAP_APP_NAME /etc/logrotate.d/$DAP_APP_NAME || true
+    systemctl reenable logrotate.timer
+    
+    echo "[ ] Additional configuration"
     adduser --system --no-create-home --group --home /opt/cellframe-node cellframe-node || true
     #usermod -aG $DAP_CHAINS_NAME `users | awk '{print $1}'`
     for username in $(cat /etc/passwd | grep "/home" | cut -d ':' -f1); do
@@ -198,6 +203,7 @@ else
     chmod 0666 $DAP_CFG_TPL
     chmod 0774 $DAP_PREFIX/bin/* || true
     chmod 0777 $DAP_PREFIX/bin/$DAP_APP_NAME-cli $DAP_PREFIX/bin/pip3* $DAP_PREFIX/bin/python3* || true
+    
     service cellframe-node start || true
     systemctl restart cellframe-node || true
     echo "[!] Done"
