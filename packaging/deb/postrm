@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash 
 
 DAP_CHAINS_NAME="cellframe"
 DAP_APP_NAME="${DAP_CHAINS_NAME}-node"
