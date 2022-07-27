@@ -180,7 +180,7 @@ else
     chmod 644  $DAP_PREFIX/share/logrotate/$DAP_APP_NAME || true
     ln -sf $DAP_PREFIX/share/logrotate/logrotate.timer /etc/systemd/system/logrotate.timer || true
     ln -sf $DAP_PREFIX/share/logrotate/$DAP_APP_NAME /etc/logrotate.d/$DAP_APP_NAME || true
-    systemctl reenable logrotate.timer
+    systemctl reenable logrotate.timer || true 
     
     echo "[ ] Additional configuration"
     adduser --system --no-create-home --group --home /opt/cellframe-node cellframe-node || true
