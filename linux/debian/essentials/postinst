@@ -176,11 +176,6 @@ else
     echo "[ ] Execute 'systemctl start $DAP_APP_NAME' to start $DAP_APP_NAME service"
 
     #USERMAN=`users | awk '{print $1}'`
-    echo "[ ] Enabling logrotate"
-    chmod 644  $DAP_PREFIX/share/logrotate/$DAP_APP_NAME || true
-    ln -sf $DAP_PREFIX/share/logrotate/logrotate.timer /etc/systemd/system/logrotate.timer || true
-    ln -sf $DAP_PREFIX/share/logrotate/$DAP_APP_NAME /etc/logrotate.d/$DAP_APP_NAME || true
-    systemctl reenable logrotate.timer || true 
     
     echo "[ ] Additional configuration"
     adduser --system --no-create-home --group --home /opt/cellframe-node cellframe-node || true
@@ -206,5 +201,14 @@ else
     
     service cellframe-node start || true
     systemctl restart cellframe-node || true
-    echo "[!] Done"
+    
 fi
+
+echo "[ ] Enabling logrotate"
+chmod 644  $DAP_PREFIX/share/logrotate/$DAP_APP_NAME || true
+ln -sf $DAP_PREFIX/share/logrotate/logrotate.timer /etc/systemd/system/logrotate.timer || true
+ln -sf $DAP_PREFIX/share/logrotate/$DAP_APP_NAME /etc/logrotate.d/$DAP_APP_NAME || true
+chmod 644 /etc/logrotate.d/$DAP_APP_NAME || true
+systemctl reenable logrotate.timer || true 
+
+echo "[!] Done"
