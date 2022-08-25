@@ -8,31 +8,72 @@ else
 	HERE=`dirname ${CMD}`
 fi
 
-#build architecture 
-#- amd64-darvin
-#- amd64-linux
-#- armhf-linux
-#- armv7-linux
+export SOURCES=${HERE}/../
 
-# freebsb? openbsd? netbsd? openwrt
-# ios (ipad/iphone) aarch64-ios-darwin
+#validate input params
+. ${HERE}/validate.sh
 
-BUILD_ARCH="${1:-amd64-linux}"
-BUILD_TYPE="${2:-release}"
-BUILD_DIR=${PWD}/build_${BUILD_ARCH}_${BUILD_TYPE}
+Help()
+{
+   echo "cellframe-node build"
+   echo "Usage: build.sh [--target ${TARGETS}] [${BUILD_TYPES}]  [OPTIONS]"
+   echo "options:   -DWHATEVER=ANYTHING will be passed to cmake as defines"
+   echo
+}
 
-echo "Build [${BUILD_TYPE}] binaries for [$BUILD_ARCH] architecture in [${BUILD_DIR}] on $(nproc) threads."
+POSITIONAL_ARGS=()
 
-#make build directory and cd in 
-mkdir -p ${BUILD_DIR}
-cd ${BUILD_DIR}
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -h|--help)
+      Help
+      shift # past argument
+      shift # past value
+      ;;
+    -t|--target)
+      TARGET="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
 
-#define DEBUG for build if neccessary
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+BUILD_TYPE="${1:-release}"
+BUILD_OPTIONS="${@:2}"
+
+BUILD_TARGET="${TARGET:-linux}"
+
+BUILD_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}
+
+VALIDATE_TARGET $TARGET
+VALIDATE_BUILD_TYPE $BUILD_TYPE
+
+#append qmake debug\release qmake options for this
 if [ "${BUILD_TYPE}" = "debug" ]; then
-    cmake ../ -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TARGET_ARCH=$BUILD_ARCH
+    BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DCMAKE_BUILD_TYPE=Debug"
 else
-    cmake ../ -DCMAKE_TARGET_ARCH=$BUILD_ARCH
+    BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DCMAKE_BUILD_TYPE=Release"
 fi
 
-#call make to do the build process
-make -j"$(nproc)"
+. ${HERE}/targets/${BUILD_TARGET}.sh
+
+#all base logic from here
+mkdir -p ${BUILD_DIR}/build
+mkdir -p ${BUILD_DIR}/dist
+
+echo "Build [${BUILD_TYPE}] binaries for [$BUILD_TARGET] in [${BUILD_DIR}] on $(nproc) threads"
+echo "with options: [${BUILD_OPTIONS[@]}]"
+
+cd ${BUILD_DIR}/build
+
+#debug out
+echo "$CMAKE ${BUILD_OPTIONS[@]}"
+
+"${CMAKE[@]}" ../../ ${BUILD_OPTIONS[@]}
+"${MAKE[@]}" 
