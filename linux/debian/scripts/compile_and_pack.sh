@@ -48,10 +48,6 @@ env
 echo "Build for $ARCH_VERSION architectures in $CI_COMMIT_REF_NAME"
 substitute_pkgname_postfix && mkdir -p build && cd build
 
-if [[ $CI_COMMIT_REF_NAME =~ ^.*-rwd$ ]]; then
-		echo "==== Will build a rwd packet"
-fi
-
 echo $error
 if [[ $ARCH_VERSION == "arm" ]]; then
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_ARM64
@@ -74,11 +70,11 @@ if [[ $ARCH_VERSION == "amd64" ]]; then
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \
 	&& ${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=Debug ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
 	
-
-	if [[ $CI_COMMIT_REF_NAME =~ ^.*-rwd$ ]]; then
+	#for some reason CI_COMMIT_REF_NAME not in env in this script
+	#if [[ $CI_COMMIT_REF_NAME =~ ^.*-rwd$ ]]; then 
 	echo "==== Building with reldebuginfo"
 	${CMAKE_PATH}cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * || error=$?
-	fi
+	#fi
 
 	sed -ibak 's/#set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/set(BUILD_WITH_GDB_DRIVER_PGSQL ON)/' ../CMakeLists.txt || error=$?
 	${CMAKE_PATH}cmake ../ && make -j$(nproc) && ${CMAKE_PATH}cpack && repack *.deb && mv -v *.deb ../packages/ && rm -r * \

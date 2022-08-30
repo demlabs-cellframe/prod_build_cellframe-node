@@ -21,6 +21,14 @@ PKGFILES=$(ls . | grep .deb)
 #echo "We have $DISTR_CODENAME there"
 #echo "On path $REPO_DIR_SRC we have debian files."
 for pkgfile in $PKGFILES; do
+
+	if ! [[ $CI_COMMIT_REF_NAME =~ ^.*-rwd$ ]]; then 
+		if [[ $(echo $pkgfile | grep "rwd") == "" ]]; then
+			echo "Skip *-rwd package due to "
+			continue
+		fi
+	fi
+	
 	if [[ $(echo $pkgfile | grep "pgsql") == "" ]]; then
 		CELLFRAME_FILESERVER_CREDS=$CELLFRAME_PUB_CREDS
 		CELLFRAME_FILESERVER_PATH=$CELLFRAME_PUB_PATH
