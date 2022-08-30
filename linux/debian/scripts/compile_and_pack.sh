@@ -45,7 +45,7 @@ pwd
 error=0
 mkdir -p packages
 
-echo "Build for $ARCH_VERSION architectures"
+echo "Build for $ARCH_VERSION architectures in $CI_COMMIT_REF_NAME"
 substitute_pkgname_postfix && mkdir -p build && cd build
 
 if [[ $CI_COMMIT_REF_NAME =~ ^.*-rwd$ ]]; then
