@@ -44,7 +44,7 @@ rm -rf tmp
 pwd
 error=0
 mkdir -p packages
-
+env
 echo "Build for $ARCH_VERSION architectures in $CI_COMMIT_REF_NAME"
 substitute_pkgname_postfix && mkdir -p build && cd build
 
