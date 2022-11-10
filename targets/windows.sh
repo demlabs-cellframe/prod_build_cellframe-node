@@ -20,8 +20,9 @@ then
       exit 255
 fi
 
-#qmake command
-CMAKE=(${MXE_ROOT}/usr/bin/x86_64-w64-mingw32.static-cmake)
+#cmake command
+#mxe install prefix if configured by mxe, need to change it
+CMAKE=(${MXE_ROOT}/usr/bin/x86_64-w64-mingw32.static-cmake ) 
 export PATH=${MXE_ROOT}/usr/bin:$PATH
 #everything else can be done by default make
 MAKE=(make)
