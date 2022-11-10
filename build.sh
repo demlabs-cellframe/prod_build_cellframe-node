@@ -58,7 +58,11 @@ VALIDATE_BUILD_TYPE $BUILD_TYPE
 if [ "${BUILD_TYPE}" = "debug" ]; then
     BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DCMAKE_BUILD_TYPE=Debug"
 else
-    BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DCMAKE_BUILD_TYPE=Release"
+    if [ "${BUILD_TYPE}" = "rwd" ]; then
+      BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+    else
+      BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DCMAKE_BUILD_TYPE=Release"
+    fi
 fi
 
 . ${HERE}/targets/${BUILD_TARGET}.sh
