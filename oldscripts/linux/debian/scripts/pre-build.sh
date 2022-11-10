@@ -1,9 +1,55 @@
 #!/bin/bash
 
+#installing required dependencies
+
+check_packages() {
+
+	IFS=" "
+	echo "[DBG] PKG_DEPS: $PKG_DEPS"
+
+	local PKG_DEPPIES=$(echo $PKG_DEPS | sed 's/\"//g')
+	echo "[DBG] PKG_DEPS: $PKG_DEPPIES"
+
+	for element in "$PKG_DEPPIES"; do
+		echo "[DEBUGGA] Checking if $element is installed"
+		if ! dpkg-query -s $element; then 
+			echo "[WRN] Package $element is not installed. Starting installation"
+			return 1
+		fi
+	done
+	return 0
+
+}
+
+install_dependencies() {
+
+	if check_packages; then
+		echo "[INF] All required packages are installed"
+	else
+		echo ""
+		/usr/bin/apt-get update
+		local PKG_DEPPIES=$(echo $PKG_DEPS | sed 's/\"//g')
+		echo "[DEBUGGA] Attempting to install $PKG_DEPPIES"
+		if /usr/bin/apt-get install -y $PKG_DEPPIES ; then
+			echo ""
+			echo "[INF] Packages were installed successfully"
+		else
+			echo "[ERR] can\'t install required packages. Please, check your package manager"
+			echo "Aborting"
+			exit 1
+		fi
+	fi
+	return 0
+
+}
+
+
 #. prod_build/general/install_dependencies
 . prod_build/general/pre-build.sh #VERSIONS and git
 export_variables "prod_build/general/conf/*"
 export_variables "prod_build/linux/debian/conf/*"
+
+#install_dependencies
 
 VERSION_STRING=$(echo $VERSION_FORMAT | sed "s/\"//g" ) #Removing quotes
 VERSION_ENTRIES=$(echo $VERSION_ENTRIES | sed "s/\"//g" )
