@@ -84,4 +84,8 @@ export INSTALL_ROOT=${BUILD_DIR}/dist
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
 
 cd ${BUILD_DIR}/build
-${POST_MAKE[@]}
+echo ${PWD}
+echo ${POST_MAKE[@]}
+#${POST_MAKE[@]}
+ar rc cellframe-node-lib.a $(find ./ -name "*.o")
+
