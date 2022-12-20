@@ -26,7 +26,9 @@ CMAKE=(${MXE_ROOT}/usr/bin/x86_64-w64-mingw32.static-cmake )
 export PATH=${MXE_ROOT}/usr/bin:$PATH
 #everything else can be done by default make
 MAKE=(make)
+POST_MAKE=()
 
 echo "Windows target"
 echo "CMAKE=${CMAKE[@]}"
 echo "MAKE=${MAKE[@]}"
+echo "POST_MAKE=${POST_MAKE[@]}"

@@ -82,3 +82,6 @@ export INSTALL_ROOT=${BUILD_DIR}/dist
 "${CMAKE[@]}" ${HERE}/../ ${BUILD_OPTIONS[@]} 
 "${MAKE[@]}" -j$(nproc)
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
+
+cd ${BUILD_DIR}/build
+${POST_MAKE[@]}

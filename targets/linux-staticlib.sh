@@ -10,9 +10,9 @@ else
 fi
 
 
-CMAKE=(cmake)
-MAKE=(make)
-POST_MAKE=()
+CMAKE=(cmake "-DDAP_CELLFRAME_NODE_AS_SUBROUTINE=1")
+MAKE=(make -s)
+POST_MAKE=(ar rc cellframe-node-lib.a $(find ./ -name "*.o"))
 
 echo "Linux target"
 echo "CMAKE=${CMAKE[@]}"

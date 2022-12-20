@@ -38,7 +38,9 @@ CMAKE=(cmake -DCMAKE_TOOLCHAIN_FILE=${OSXCROSS_ROOT}/toolchain.cmake)
 
 ##everything else can be done by default make
 MAKE=(make)
+POST_MAKE=()
 
 echo "OSXcross target"
 echo "CMAKE=${CMAKE[@]}"
 echo "MAKE=${MAKE[@]}"
+echo "POST_MAKE=${POST_MAKE[@]}"

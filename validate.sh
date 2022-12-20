@@ -16,7 +16,7 @@ containsElement () {
 }
 
 
-TARGETS=(linux windows android osx)
+TARGETS=(linux linux-staticlib windows android osx)
 BUILD_TYPES=(release debug rwd)
 
 VALIDATE_TARGET()
