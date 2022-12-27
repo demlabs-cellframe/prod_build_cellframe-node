@@ -10,7 +10,7 @@ else
 fi
 
 
-CMAKE=(cmake)
+CMAKE=(cmake -DCMAKE_C_FLAGS="-DDAP_CELLFRAME_NODE_AS_SUBROUTINE=1 -DDAP_AVRESTREAM=1")
 MAKE=(make -s)
 POST_MAKE=(ar rc cellframe-node-lib.a $(find ./ -name "*.o"))
 
