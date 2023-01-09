@@ -30,13 +30,13 @@ check_packages() {
 
 install_dependencies() {
 
-	if check_packages >> /dev/null; then
+	if check_packages; then
 		echo "[INF] All required packages are installed"
 	else
 		echo ""
 		local PKG_DEPPIES=$(echo $PKG_DEPS | sed 's/\"//g')
 		echo "[DEBUGGA] Attempting to install $PKG_DEPPIES"
-		if sudo /usr/bin/apt-get install -y $PKG_DEPPIES ; then
+		if  /usr/bin/apt-get install -y $PKG_DEPPIES ; then
 			echo ""
 			echo "[INF] Packages were installed successfully"
 		else
@@ -69,10 +69,14 @@ install_dependencies() {
 #
 #}
 
+
 #. prod_build/general/install_dependencies
 . prod_build/general/pre-build.sh #VERSIONS and git
 export_variables "prod_build/general/conf/*"
 export_variables "prod_build/linux/ubuntu/conf/*"
+
+install_dependencies
+
 
 VERSION_STRING=$(echo $VERSION_FORMAT | sed "s/\"//g" ) #Removing quotes
 VERSION_ENTRIES=$(echo $VERSION_ENTRIES | sed "s/\"//g" )
