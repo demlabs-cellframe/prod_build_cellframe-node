@@ -79,6 +79,6 @@ cd ${BUILD_DIR}/build
 #debug out
 echo "$CMAKE ${BUILD_OPTIONS[@]}"
 export INSTALL_ROOT=${BUILD_DIR}/dist
-"${CMAKE[@]}" ${HERE}/../ ${BUILD_OPTIONS[@]} 
+"${CMAKE[@]}" ${HERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}  
 "${MAKE[@]}" -j$(nproc)
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
