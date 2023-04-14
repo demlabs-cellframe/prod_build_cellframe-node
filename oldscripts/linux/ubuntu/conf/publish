@@ -1,5 +1,0 @@
-PACKAGE_PATH=/home/gitlab-runner/production-docker/builds/deb/
-REPO_DIR_SRC=/var/tmp/repository
-REPO_ADDR=debian.pub.demlabs.net
-REPO_DIR=/var/www/html/debian.pub.demlabs.net
-DISTR_COMPONENT=main
