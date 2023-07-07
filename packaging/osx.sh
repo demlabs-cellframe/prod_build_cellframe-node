@@ -2,12 +2,23 @@
 
 set -e
 
-if [ ${0:0:1} = "/" ]; then
-	HERE=`dirname $0`
-else
-	CMD=`pwd`/$0
-	HERE=`dirname ${CMD}`
-fi
+SOURCE=${BASH_SOURCE[0]}
+while [ -L "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  TARGET=$(readlink "$SOURCE")
+  if [[ $TARGET == /* ]]; then
+    echo "SOURCE '$SOURCE' is an absolute symlink to '$TARGET'"
+    SOURCE=$TARGET
+  else
+    DIR=$( dirname "$SOURCE" )
+    echo "SOURCE '$SOURCE' is a relative symlink to '$TARGET' (relative to '$DIR')"
+    SOURCE=$DIR/$TARGET # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+  fi
+done
+echo "SOURCE is '$SOURCE'"
+RDIR=$( dirname "$SOURCE" )
+DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
+HERE="$DIR"
+
 
 PKG_SIGN_POSSIBLE=1
 
@@ -69,13 +80,13 @@ PACK()
     cp -r ${DIST_DIR}/Users/$(whoami)/Applications/Cellframe.app ${PACKAGE_DIR}/CellframeNode.app
 
     #copy pkginstall
-	cp  ${HERE}/../os/macos/PKGINSTALL/* ${PACKAGE_DIR}
+	cp  ${HERE}/../../os/macos/PKGINSTALL/* ${PACKAGE_DIR}
 
 	echo "Do packaging magic in [$PACKAGE_DIR]"
 	cd $wd
 	
 	#get version info
-	source "${HERE}/../version.mk"
+	source "${HERE}/../../version.mk"
     PACKAGE_NAME="cellframe-node_${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}_amd64.pkg"
 	PACKAGE_NAME_SIGNED="cellframe-node_${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}_amd64-signed.pkg"
     echo "Building package [$PACKAGE_NAME]"
