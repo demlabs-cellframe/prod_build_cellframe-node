@@ -21,6 +21,15 @@ MHERE="$DIR"
 
 export SOURCES=${MHERE}/../
 
+case "${UNAME_OUT}" in
+    Linux*)     MACHINE=Linux;;
+    Darwin*)    MACHINE=Mac;;
+    CYGWIN*)    MACHINE=Cygwin;;
+    MINGW*)     MACHINE=MinGw;;
+    MSYS_NT*)   MACHINE=Git;;
+    *)          MACHINE="UNKNOWN:${UNAME_OUT}"
+esac
+
 
 #validate input params
 . ${MHERE}/validate.sh
@@ -83,7 +92,14 @@ fi
 mkdir -p ${BUILD_DIR}/build
 mkdir -p ${BUILD_DIR}/dist
 
-echo "Build [${BUILD_TYPE}] binaries for [$BUILD_TARGET] in [${BUILD_DIR}] on $(nproc) threads"
+if [ "$MACHINE" != "Mac" ]
+then
+  NPROC="$(nproc)"
+else
+  NPROC="$(sysctl -n hw.ncpu)"
+fi
+
+echo "Build [${BUILD_TYPE}] binaries for [$BUILD_TARGET] in [${BUILD_DIR}] on $NPROC threads"
 echo "with options: [${BUILD_OPTIONS[@]}]"
 
 cd ${BUILD_DIR}/build
@@ -94,5 +110,5 @@ echo "${CMAKE[@]} ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}"
 #echo $HERE
 export INSTALL_ROOT=${BUILD_DIR}/dist
 "${CMAKE[@]}" ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}  
-"${MAKE[@]}" -j$(nproc)
+"${MAKE[@]}" -j $NPROC
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
