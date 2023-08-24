@@ -83,7 +83,7 @@ fi
 mkdir -p ${BUILD_DIR}/build
 mkdir -p ${BUILD_DIR}/dist
 
-echo "Build [${BUILD_TYPE}] binaries for [$BUILD_TARGET] in [${BUILD_DIR}] on $(nproc) threads"
+#echo "Build [${BUILD_TYPE}] binaries for [$BUILD_TARGET] in [${BUILD_DIR}] on $(nproc) threads"
 echo "with options: [${BUILD_OPTIONS[@]}]"
 
 cd ${BUILD_DIR}/build
@@ -93,6 +93,6 @@ pwd
 echo "${CMAKE[@]} ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}"
 #echo $HERE
 export INSTALL_ROOT=${BUILD_DIR}/dist
-"${CMAKE[@]}" ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}  
-"${MAKE[@]}" -j$(nproc)
+"/usr/local/bin/cmake" ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}  
+#"${MAKE[@]}" -j$(nproc)
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
