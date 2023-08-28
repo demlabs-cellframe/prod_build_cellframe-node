@@ -65,19 +65,19 @@ then
 else
     echo "Host is $MACHINE, use native build toolchain"
 
-    if [ -f "/opt/homebrew/bin/cmake" ] 
-    then
-      CMAKE=(/opt/homebrew/bin/cmake)
-      echo "Found homebrew cmake at $CMAKE, using it"
-    fi
-
     if [ -f "/Users/$USER/Qt/Tools/CMake/CMake.app/Contents/bin/cmake" ] 
     then
       CMAKE=(/Users/$USER/Qt/Tools/CMake/CMake.app/Contents/bin/cmake )
-      echo "Found QT cmake at $CMAKE, using it preferably"
+      echo "Found QT cmake at $CMAKE, using it preferable"
     else
-      echo "Not found cmake at default qt location, asuming it is in PATH"
-      CMAKE=(cmake)
+      if [ -f "/opt/homebrew/bin/cmake" ] 
+      then
+        CMAKE=(/opt/homebrew/bin/cmake)
+        echo "Found homebrew cmake at $CMAKE, using it"
+      else
+        echo "Not found cmake at default qt location, asuming it is in PATH"
+        CMAKE=(cmake)
+      fi
     fi
 
     ##everything else can be done by default make
