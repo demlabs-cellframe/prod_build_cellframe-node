@@ -98,7 +98,7 @@ PACK()
 	mkdir -p ${PAYLOAD_BUILD}
 	mkdir -p ${SCRIPTS_BUILD}
 
-	cp ${PACKAGE_DIR}/${BRAND}.plist ${PAYLOAD_BUILD}
+	cp ${PACKAGE_DIR}/${BRAND}Node.plist ${PAYLOAD_BUILD}
 	cp -r ${BRAND_OSX_BUNDLE_DIR} ${PAYLOAD_BUILD}
 
 	
