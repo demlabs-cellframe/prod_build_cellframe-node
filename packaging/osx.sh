@@ -58,7 +58,7 @@ PACK()
     BUILD_DIR=$2
     OUT_DIR=$3
 
-	BRAND=CellframeNode
+	BRAND=Cellframe
 
     #USED FOR PREPARATION OF UNIFIED BUNDLE
     #all binaries and some structure files are threre
