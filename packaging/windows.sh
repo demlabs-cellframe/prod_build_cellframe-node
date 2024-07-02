@@ -19,5 +19,6 @@ PACK()
     source "${HERE}/../version.mk"
     PACKAGE_NAME="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}-amd64.exe"
     makensis -V4 -DAPP_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH} ${DIST_DIR}/cellframe-node.nsis
-    
+
+    cp $DIST_DIR/*.exe $OUT_DIR/
 }
