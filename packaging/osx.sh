@@ -77,7 +77,7 @@ PACK()
 
     #copy base application bundle
     #path to it in BRAND_OSX_BUNDLE_DIR
-    cp -r ${DIST_DIR}/Users/$(whoami)/Applications/Cellframe.app ${PACKAGE_DIR}/CellframeNode.app
+    cp -r ${DIST_DIR}/Applications/CellframeNode.app ${PACKAGE_DIR}/CellframeNode.app
 
     #copy pkginstall
 	cp  ${HERE}/../../os/macos/PKGINSTALL/* ${PACKAGE_DIR}
@@ -98,7 +98,7 @@ PACK()
 	mkdir -p ${PAYLOAD_BUILD}
 	mkdir -p ${SCRIPTS_BUILD}
 
-	cp ${PACKAGE_DIR}/${BRAND}.plist ${PAYLOAD_BUILD}
+	#cp ${PACKAGE_DIR}/${BRAND}.plist ${PAYLOAD_BUILD}/
 	cp -r ${BRAND_OSX_BUNDLE_DIR} ${PAYLOAD_BUILD}
 
 	

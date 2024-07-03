@@ -35,22 +35,16 @@ esac
 if [ "$MACHINE" != "Mac" ]
 then
   echo "Host is $MACHINE, use osx-cross build target"
-  if [ -z "$OSXCROSS_QT_ROOT" ]
+  if [ -z "$OSXCROSS_ROOT" ]
   then
-        echo "Please, export OSXCROSS_QT_ROOT variable, pointing to Qt-builds locations for osxcross environment"
+        echo "Please, export OSXCROSS_ROOT variable, pointing to Qt-builds locations for osxcross environment"
         exit 255
   fi
 
 
-  if [ -z "$OSXCROSS_QT_VERSION" ]
-  then
-        echo "Please, export OSXCROSS_QT_VERSION variable, scpecifying Qt-version in OSXCROSS_QT_ROOT directory."
-        exit 255
-  fi
+  echo "Using  ${OSXCROSS_ROOT} osxcross "
 
-  echo "Using QT ${OSXCROSS_QT_VERSION} from ${OSXCROSS_QT_ROOT}/${OSXCROSS_QT_VERSION}"
-
-  [ ! -d ${OSXCROSS_QT_ROOT}/${OSXCROSS_QT_VERSION} ] && { echo "No QT ${OSXCROSS_QT_VERSION} found in ${OSXCROSS_QT_ROOT}" && exit 255; }
+  [ ! -d ${OSXCROSS_ROOT} ] && { echo "No ${OSXCROSS_ROOT} found" && exit 255; }
 
   $(${OSXCROSS_ROOT}/bin/osxcross-conf)
 
