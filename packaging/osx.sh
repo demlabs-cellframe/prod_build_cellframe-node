@@ -67,7 +67,7 @@ PACK()
     #USED FOR PROCESSING OF PREPARED BUNDLE: BOM CREATION, ETC
     OSX_PKG_DIR=${DIST_DIR}/pkg
 
-	BRAND_OSX_BUNDLE_DIR=${PACKAGE_DIR}/${BRAND}.app
+	BRAND_OSX_BUNDLE_DIR=${DIST_DIR}/Applications/CellframeNode.app
 
     #prepare correct packaging structure
     mkdir -p ${PACKAGE_DIR}
@@ -77,7 +77,7 @@ PACK()
 
     #copy base application bundle
     #path to it in BRAND_OSX_BUNDLE_DIR
-    cp -r ${DIST_DIR}/Users/$(whoami)/Applications/Cellframe.app ${PACKAGE_DIR}/CellframeNode.app
+    #cp -r ${DIST_DIR}/Applications/CellframeNode.app ${PACKAGE_DIR}/CellframeNode.app
 
     #copy pkginstall
 	cp  ${HERE}/../../os/macos/PKGINSTALL/* ${PACKAGE_DIR}
@@ -87,8 +87,8 @@ PACK()
 	
 	#get version info
 	source "${HERE}/../../version.mk"
-    PACKAGE_NAME="cellframe-node_${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}_amd64.pkg"
-	PACKAGE_NAME_SIGNED="cellframe-node_${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}_amd64-signed.pkg"
+    PACKAGE_NAME="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}-amd64.pkg"
+	PACKAGE_NAME_SIGNED="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}-amd64-signed.pkg"
     echo "Building package [$PACKAGE_NAME]"
 
 	#prepare
@@ -98,7 +98,7 @@ PACK()
 	mkdir -p ${PAYLOAD_BUILD}
 	mkdir -p ${SCRIPTS_BUILD}
 
-	cp ${PACKAGE_DIR}/${BRAND}.plist ${PAYLOAD_BUILD}
+	#cp ${PACKAGE_DIR}/${BRAND}.plist ${PAYLOAD_BUILD}/
 	cp -r ${BRAND_OSX_BUNDLE_DIR} ${PAYLOAD_BUILD}
 
 	
