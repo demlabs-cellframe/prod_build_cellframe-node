@@ -43,7 +43,6 @@ then
 
 
   echo "Using  ${OSXCROSS_ROOT} osxcross "
-
   [ ! -d ${OSXCROSS_ROOT} ] && { echo "No ${OSXCROSS_ROOT} found" && exit 255; }
 
   $(${OSXCROSS_ROOT}/bin/osxcross-conf)
