@@ -98,10 +98,24 @@ PACK()
 	mkdir -p ${PAYLOAD_BUILD}
 	mkdir -p ${SCRIPTS_BUILD}
 
-	#cp ${PACKAGE_DIR}/${BRAND}.plist ${PAYLOAD_BUILD}/
+	cp ${HERE}/../../os/macos/Info.plist ${BRAND_OSX_BUNDLE_DIR}/Contents
 	cp -r ${BRAND_OSX_BUNDLE_DIR} ${PAYLOAD_BUILD}
 
-	
+	if [ "$PKG_SIGN_POSSIBLE" -eq "1" ]; then
+		rcodesign sign --code-signature-flags runtime \
+		--p12-file ${OSX_PKEY_INSTALLER} --p12-password ${OSX_PKEY_INSTALLER_PASS} \
+		${PAYLOAD_BUILD}/CellframeNode.app/Contents/MacOS/cellframe-node
+		rcodesign sign --code-signature-flags runtime \
+		--p12-file ${OSX_PKEY_INSTALLER} --p12-password ${OSX_PKEY_INSTALLER_PASS} \
+		${PAYLOAD_BUILD}/CellframeNode.app/Contents/MacOS/cellframe-node-cli
+		rcodesign sign --code-signature-flags runtime \
+		--p12-file ${OSX_PKEY_INSTALLER} --p12-password ${OSX_PKEY_INSTALLER_PASS} \
+		${PAYLOAD_BUILD}/CellframeNode.app/Contents/MacOS/cellframe-node-tool
+		rcodesign sign --code-signature-flags runtime \
+		--p12-file ${OSX_PKEY_INSTALLER} --p12-password ${OSX_PKEY_INSTALLER_PASS} \
+		${PAYLOAD_BUILD}/CellframeNode.app/Contents/MacOS/cellframe-node-config
+	fi
+
 	cp ${PACKAGE_DIR}/preinstall ${SCRIPTS_BUILD}
 	cp ${PACKAGE_DIR}/postinstall ${SCRIPTS_BUILD}
 
@@ -141,11 +155,11 @@ PACK()
 
 		cd ${OUT_DIR}
 		
-		rcodesign sign --p12-file ${OSX_PKEY_INSTALLER} --p12-password ${OSX_PKEY_INSTALLER_PASS} ${PACKAGE_NAME} ${PACKAGE_NAME_SIGNED}
+		rcodesign sign --code-signature-flags runtime --p12-file ${OSX_PKEY_INSTALLER} --p12-password ${OSX_PKEY_INSTALLER_PASS} ${PACKAGE_NAME} ${PACKAGE_NAME_SIGNED}
 		
 		echo "Notarizing package"
 		rcodesign notary-submit --api-key-path ${OSX_APPSTORE_CONNECT_KEY} ${PACKAGE_NAME_SIGNED} --staple
-		rm ${PACKAGE_NAME}
+		#rm ${PACKAGE_NAME}
 	fi
 }
 
