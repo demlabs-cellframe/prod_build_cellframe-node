@@ -1,23 +1,13 @@
-#!/bin/bash
+#!/bin/bash -e
+
 set -e
 
-SOURCE=${BASH_SOURCE[0]}
-while [ -L "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-  TARGET=$(readlink "$SOURCE")
-  if [[ $TARGET == /* ]]; then
-    echo "SOURCE '$SOURCE' is an absolute symlink to '$TARGET'"
-    SOURCE=$TARGET
-  else
-    DIR=$( dirname "$SOURCE" )
-    echo "SOURCE '$SOURCE' is a relative symlink to '$TARGET' (relative to '$DIR')"
-    SOURCE=$DIR/$TARGET # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-  fi
-done
-echo "SOURCE is '$SOURCE'"
-RDIR=$( dirname "$SOURCE" )
-DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
-HERE="$DIR"
-
+if [ ${0:0:1} = "/" ]; then
+	HERE=`dirname $0`
+else
+	CMD=`pwd`/$0
+	HERE=`dirname ${CMD}`
+fi
 
 export SOURCES=${HERE}/../
 
@@ -30,9 +20,9 @@ containsElement () {
 
 Help()
 {
-   echo "cellframe-node pack"
-   echo "Usage: pack.sh [--target linux | windows | android] [release | debug]"
-   echo "--sign PATH should provide a path to file with env variables ANDROID_KEYSTORE_PATH, ANDROID_KEYSTORE_ALIAS, ANDROID_KEYSTORE_PASS for apk signing"
+   echo "cellframe-dashboard pack"
+   echo "Usage: pack.sh [--target ${TARGETS}] [${BUILD_TYPES}]  [OPTIONS]"
+   echo "--sign PATH should provide a path to file with env variables"
 }
 
 POSITIONAL_ARGS=()
@@ -49,6 +39,11 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
+    -s|--sign)
+      SIGNCONFIG="$2"
+      shift # past argument
+      shift # past value
+      ;;
     *)
       POSITIONAL_ARGS+=("$1") # save positional arg
       shift # past argument
@@ -60,12 +55,10 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 #all base logic from here
 
-
 BUILD_TYPE="${1:-release}"
 BUILD_OPTIONS="${@:2}"
 
 BUILD_TARGET="${TARGET:-linux}"
-
 
 #validate input params
 . ${HERE}/validate.sh
@@ -77,15 +70,29 @@ BUILD_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}/build
 OUT_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}/
 
 #we care only about dist dir, i think
-[ ! -d ${DIST_DIR} ] && { echo "No build found: $BRAND $BUILD_TARGET" && exit 255; }
+[ ! -d ${DIST_DIR} ] && { echo "No build found: $BUILD_TARGET" && exit 255; }
 
 
+if [ -z "$SIGNCONFIG" ]
+then
+      echo "No SIGNCONFIG provided. Packages will NOT be signed"
+      
+else
+  if [ -f "$SIGNCONFIG" ]
+  then
+    echo "Using sign-config from [${SIGNCONFIG}]"
+    source $SIGNCONFIG
+  else
+    echo "[${SIGNCONFIG}] sign config not found"
+    exit 255
+  fi
+fi
 
 echo "Pack [${BUILD_TYPE}] binaries for [$BUILD_TARGET] from [${DIST_DIR}] to [${OUT_DIR}]"
 
 . ${HERE}/packaging/${BUILD_TARGET}.sh
 
-PACK ${DIST_DIR} ${BUILD_DIR} ${OUT_DIR}
+PACK ${DIST_DIR} ${BUILD_DIR} ${OUT_DIR} ${BUILD_TYPE}
 
 
 
