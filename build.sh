@@ -87,6 +87,11 @@ then
   DEFAULT_TARGET="windows"
 fi
 
+if [ "$MACHINE" == "MinGw" ]
+then
+  DEFAULT_TARGET="windows"
+fi
+
 echo "Host machin is $MACHINE"
 BUILD_TARGET="${TARGET:-$DEFAULT_TARGET}"
 

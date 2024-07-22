@@ -46,7 +46,7 @@ then
 else
       #cmake command
       #mxe install prefix if configured by mxe, need to change it
-      CMAKE=(cmake -G "MSYS Makefiles") 
+      CMAKE=(cmake -G "Unix Makefiles") 
       MAKE=(make)
 
       echo "Windows target"
