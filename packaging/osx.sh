@@ -87,8 +87,8 @@ PACK()
 	
 	#get version info
 	source "${HERE}/../../version.mk"
-    PACKAGE_NAME="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}-amd64.pkg"
-	PACKAGE_NAME_SIGNED="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}-amd64-signed.pkg"
+    PACKAGE_NAME="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-amd64.pkg"
+	PACKAGE_NAME_SIGNED="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-amd64-signed.pkg"
     echo "Building package [$PACKAGE_NAME]"
 
 	#prepare
