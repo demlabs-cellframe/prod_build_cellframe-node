@@ -19,6 +19,27 @@ RDIR=$( dirname "$SOURCE" )
 DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 HERE="$DIR"
 
+#check if we can sign apk
+APK_SIGN_POSSIBLE=1
+if [ -z "$ANDROID_KEYSTORE_PATH" ]
+then
+      echo "No ANDROID_KEYSTORE_PATH provided. APK will NOT be signed"
+      APK_SIGN_POSSIBLE=0
+fi
+
+if [ -z "$ANDROID_KEYSTORE_ALIAS" ]
+then
+      echo "No ANDROID_KEYSTORE_ALIAS provided. APK will NOT be signed"
+      APK_SIGN_POSSIBLE=0
+fi
+
+if [ -z "$ANDROID_KEYSTORE_PASS" ]
+then
+    echo "No ANDROID_KEYSTORE_PASS provided. APK will NOT be signed"
+    APK_SIGN_POSSIBLE=0
+fi
+
+
 
 FILL_VERSION()
 {
@@ -46,4 +67,8 @@ PACK()
 
     cd $HERE/../../os/android
     ./gradlew assembleRelease
+
+    if [ "$APK_SIGN_POSSIBLE" -eq "1" ]; then
+        apksigner sign --ks-key-alias $ANDROID_KEYSTORE_ALIAS --ks $ANDROID_KEYSTORE_PATH --ks-pass pass:"$ANDROID_KEYSTORE_PASS" --in ./app/build/outputs/apk/release/app-release.apk --out ../../CellframeNode.apk
+    fi
 }
