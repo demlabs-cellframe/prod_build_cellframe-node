@@ -44,6 +44,6 @@ PACK()
     BUILD_DIR=$2
     OUT_DIR=$3
 
-    cd $OUT_DIR/../os/android
+    cd $HERE/../../os/android
     ./gradlew assembleRelease
 }
