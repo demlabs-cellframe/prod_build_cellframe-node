@@ -19,9 +19,9 @@ RDIR=$( dirname "$SOURCE" )
 DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 HERE="$DIR"
 
-CMAKE=(cmake -DCMAKE_TOOLCHAIN_FILE=${ANDROID_CMAKE_TOOLCHAIN} -DANDROID_ABI=arm64-v8a -DANDROID_NATIVE_API_LEVEL=29)
-MAKE=(make)
+CMAKE=()
+MAKE=()
 
-echo "Linux target"
+echo "Android target: use pack.sh!"
 echo "CMAKE=${CMAKE[@]}"
 echo "MAKE=${MAKE[@]}"

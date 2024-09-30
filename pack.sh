@@ -70,7 +70,7 @@ BUILD_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}/build
 OUT_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}/
 
 #we care only about dist dir, i think
-[ ! -d ${DIST_DIR} ] && { echo "No build found: $BUILD_TARGET" && exit 255; }
+#[ ! -d ${DIST_DIR} ] && { echo "No build found: $BUILD_TARGET" && exit 255; }
 
 
 if [ -z "$SIGNCONFIG" ]
