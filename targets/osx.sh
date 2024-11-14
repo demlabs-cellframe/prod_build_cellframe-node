@@ -49,7 +49,33 @@ then
 
 
   export OSXCROSS_HOST=x86_64-apple-darwin20.4
-  CMAKE=(cmake -DCMAKE_TOOLCHAIN_FILE=${OSXCROSS_ROOT}/toolchain.cmake)
+
+  QT_LIBS=(-DQt5_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5/
+           -DQt5Core_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5Core/ 
+           -DQt5Qml_DIR=//opt/osxcross/qt-5.15.13/lib/cmake/Qt5Qml/ 
+           -DQt5Network_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5Network 
+           -DQt5PacketProtocol_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5PacketProtocol/ 
+           -DQt5Quick_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5Quick 
+           -DQt5Gui_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5Gui/ 
+           -DQt5AccessibilitySupport_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5AccessibilitySupport/ 
+           -DQt5ThemeSupport_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5ThemeSupport/ 
+           -DQt5FontDatabaseSupport_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5FontDatabaseSupport/ 
+           -DQt5GraphicsSupport_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5GraphicsSupport/ 
+           -DQt5PrintSupport_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5PrintSupport/ 
+           -DQt5Widgets_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5Widgets/ 
+           -DQt5ClipboardSupport_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5ClipboardSupport/ 
+           -DQt5EventDispatcherSupport_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5EventDispatcherSupport/ 
+           -DQt5Svg_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5Svg/ 
+           -DQt5Zlib_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5Zlib/ 
+           -DQt5VirtualKeyboard_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5VirtualKeyboard/
+           -DQt5QmlModels_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5QmlModels
+           -DQt5WebSockets_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5WebSockets
+           -DQt5QuickWidgets_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5QuickWidgets
+           -DQt5QuickControls2_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5QuickControls2
+           -DQt5QmlWorkerScript_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5QmlWorkerScript
+           -DQt5QmlImportScanner_DIR=/opt/osxcross/qt-5.15.13/lib/cmake/Qt5QmlImportScanner) 
+
+  CMAKE=(cmake -DCMAKE_TOOLCHAIN_FILE=${OSXCROSS_ROOT}/toolchain.cmake ${QT_LIBS[@]})
 
   ##everything else can be done by default make
   MAKE=(make)
