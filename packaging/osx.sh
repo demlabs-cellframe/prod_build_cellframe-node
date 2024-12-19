@@ -54,7 +54,7 @@ fi
 
 PACK_LINUX() 
 {
-    DIST_DIR=$1
+      DIST_DIR=$1
     BUILD_DIR=$2
     OUT_DIR=$3
 
@@ -141,9 +141,11 @@ PACK_LINUX()
 
 	numberOfFiles=$(find ${PAYLOAD_BUILD} | wc -l)
 	installKBytes=$(du -k -s ${PAYLOAD_BUILD} | cut -d"$(echo -e '\t')" -f1)
-	sed -i "s/numberOfFiles=\".*\"/numberOfFiles=\"$numberOfFiles\" installKBytes=\"$installKBytes\"/" ${OSX_PKG_DIR}/PackageInfo
-	sed -i "s/ version=\".*\"/ version=\"${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}\"/" ${OSX_PKG_DIR}/PackageInfo
+	sed -i "s/numberOfFiles=\"[0-9]\+\"/numberOfFiles=\"$numberOfFiles\"/g" ${OSX_PKG_DIR}/PackageInfo
+	sed -i "s/installKBytes=\"[0-9]\+\"/installKBytes=\"$installKBytes\"/" ${OSX_PKG_DIR}/PackageInfo
+	sed -i "s/ version=\"[0-9]\+\"/ version=\"${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}\"/" ${OSX_PKG_DIR}/PackageInfo
 	cat ${OSX_PKG_DIR}/PackageInfo
+
 	(cd $OSX_PKG_DIR && xar --compression none -cf ../../${PACKAGE_NAME} *)
 	
 	#check if we can sign pkg
