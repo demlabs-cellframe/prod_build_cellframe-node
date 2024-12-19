@@ -143,7 +143,8 @@ PACK_LINUX()
 	installKBytes=$(du -k -s ${PAYLOAD_BUILD} | cut -d"$(echo -e '\t')" -f1)
 	sed -i "s/numberOfFiles=\"[0-9]\+\"/numberOfFiles=\"$numberOfFiles\"/g" ${OSX_PKG_DIR}/PackageInfo
 	sed -i "s/installKBytes=\"[0-9]\+\"/installKBytes=\"$installKBytes\"/" ${OSX_PKG_DIR}/PackageInfo
-
+	sed -i "s/version=\".*\"/version=\"${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATHCH}\"/" ${OSX_PKG_DIR}/PackageInfo
+	cat ${OSX_PKG_DIR}/PackageInfo
 	(cd $OSX_PKG_DIR && xar --compression none -cf ../../${PACKAGE_NAME} *)
 	
 	#check if we can sign pkg
