@@ -49,7 +49,7 @@ then
 
 
   export OSXCROSS_HOST=x86_64-apple-darwin20.4
-  CMAKE=(cmake -DCMAKE_TOOLCHAIN_FILE=${OSXCROSS_ROOT}/toolchain.cmake)
+  CMAKE=(cmake -DCMAKE_TOOLCHAIN_FILE=${OSXCROSS_ROOT}/toolchain.cmake  -DCMAKE_C_FLAGS="-I/opt/osxcross/macports/pkgs/opt/local/include/ -L/opt/osxcross/macports/pkgs/opt/local/lib/postgresql/")
 
   ##everything else can be done by default make
   MAKE=(make)
