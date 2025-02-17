@@ -150,9 +150,5 @@ export INSTALL_ROOT=${BUILD_DIR}/dist
 "${MAKE[@]}"  -j $NPROC
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
 
-export OSXCROSS_HOST=x86_64-apple-darwin
-export CC=/opt/osxcross/bin/x86_64-apple-darwin20.4-clang
-export CXX=/opt/osxcross/bin/x86_64-apple-darwin20.4-clang++
-export CMAKE_PREFIX_PATH=/opt/osxcross/qt-5.15.13:$CMAKE_PREFIX_PATH
 git config --global --add safe.directory /opt/project
 
