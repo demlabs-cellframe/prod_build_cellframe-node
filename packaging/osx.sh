@@ -125,11 +125,11 @@ PACK_LINUX()
 	#create .pkg struture to further xar coommand
 
 	#code-sign binaries
-	if [ "$PKG_SIGN_POSSIBLE" -eq "1" ]; then
-		echo "Code-signig binaries"
+	#if [ "$PKG_SIGN_POSSIBLE" -eq "1" ]; then
+	#	echo "Code-signig binaries"
 		#add runtime flag to bypass notarization warnings about hardened runtime.
-		rcodesign sign --code-signature-flags runtime --p12-file ${OSX_PKEY_APPLICATION} --p12-password ${OSX_PKEY_APPLICATION_PASS} ${PAYLOAD_BUILD}/${BRAND}.app
-	fi
+	#	rcodesign sign --code-signature-flags runtime --p12-file ${OSX_PKEY_APPLICATION} --p12-password ${OSX_PKEY_APPLICATION_PASS} ${PAYLOAD_BUILD}/${BRAND}.app
+	#fi
 
 	# create bom file
 	mkbom -u 0 -g 80 ${PAYLOAD_BUILD} ${OSX_PKG_DIR}/Bom
