@@ -115,15 +115,15 @@ fi
 
 # Add -DBUILD_DIAGTOOL=ON if the target is windows
 if [ "$BUILD_TARGET" == "windows" ]; then
-    BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DBUILD_DIAGTOOL=ON"
+    BUILD_OPTIONS=("-DBUILD_DIAGTOOL=ON" "${BUILD_OPTIONS[@]}")
 fi
 # Add -DBUILD_DIAGTOOL=ON the target is linux
 if [ "$BUILD_TARGET" == "linux" ]; then
-    BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DBUILD_DIAGTOOL=ON"
+    BUILD_OPTIONS=("-DBUILD_DIAGTOOL=ON" "${BUILD_OPTIONS[@]}")
 fi
 # Add -DBUILD_DIAGTOOL=ON the target is osx
 if [ "$BUILD_TARGET" == "osx" ]; then
-    BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DBUILD_DIAGTOOL=ON"
+    BUILD_OPTIONS=("-DBUILD_DIAGTOOL=ON" "${BUILD_OPTIONS[@]}")
 fi
 #all base logic from here
 mkdir -p ${BUILD_DIR}/build
