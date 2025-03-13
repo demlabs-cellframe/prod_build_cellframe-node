@@ -52,9 +52,9 @@ then
 	PKG_SIGN_POSSIBLE=0
 fi
 
-PACK() 
+PACK_LINUX() 
 {
-    DIST_DIR=$1
+      DIST_DIR=$1
     BUILD_DIR=$2
     OUT_DIR=$3
 
@@ -114,6 +114,9 @@ PACK()
 		rcodesign sign --code-signature-flags runtime \
 		--p12-file ${OSX_PKEY_INSTALLER} --p12-password ${OSX_PKEY_INSTALLER_PASS} \
 		${PAYLOAD_BUILD}/CellframeNode.app/Contents/MacOS/cellframe-node-config
+		rcodesign sign --code-signature-flags runtime \
+  		--p12-file ${OSX_PKEY_INSTALLER} --p12-password ${OSX_PKEY_INSTALLER_PASS} \
+  		${PAYLOAD_BUILD}/CellframeNode.app/Contents/MacOS/cellframe-diagtool
 	fi
 
 	cp ${PACKAGE_DIR}/preinstall ${SCRIPTS_BUILD}
@@ -143,6 +146,8 @@ PACK()
 	installKBytes=$(du -k -s ${PAYLOAD_BUILD} | cut -d"$(echo -e '\t')" -f1)
 	sed -i "s/numberOfFiles=\"[0-9]\+\"/numberOfFiles=\"$numberOfFiles\"/g" ${OSX_PKG_DIR}/PackageInfo
 	sed -i "s/installKBytes=\"[0-9]\+\"/installKBytes=\"$installKBytes\"/" ${OSX_PKG_DIR}/PackageInfo
+	sed -i "s/ version=\"[0-9]\+\"/ version=\"${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}\"/" ${OSX_PKG_DIR}/PackageInfo
+	cat ${OSX_PKG_DIR}/PackageInfo
 
 	(cd $OSX_PKG_DIR && xar --compression none -cf ../../${PACKAGE_NAME} *)
 	
@@ -164,3 +169,84 @@ PACK()
 }
 
 
+
+PACK_OSX() 
+{
+    DIST_DIR=$1
+    BUILD_DIR=$2
+    OUT_DIR=$3
+
+	BRAND=CellframeNode
+
+    #USED FOR PREPARATION OF UNIFIED BUNDLE
+    #all binaries and some structure files are threre
+    PACKAGE_DIR=${DIST_DIR}/osxpackaging
+
+    #USED FOR PROCESSING OF PREPARED BUNDLE: BOM CREATION, ETC
+    OSX_PKG_DIR=${DIST_DIR}/pkg
+
+	BRAND_OSX_BUNDLE_DIR=${DIST_DIR}/Applications/CellframeNode.app
+
+    #prepare correct packaging structure
+    mkdir -p ${PACKAGE_DIR}
+    mkdir -p ${OSX_PKG_DIR}
+
+    echo "Creating unified package structure in [$BRAND_OSX_BUNDLE_DIR]"
+
+    #copy base application bundle
+    #path to it in BRAND_OSX_BUNDLE_DIR
+    #cp -r ${DIST_DIR}/Applications/CellframeNode.app ${PACKAGE_DIR}/CellframeNode.app
+
+    #copy pkginstall
+	cp  ${HERE}/../../os/macos/PKGINSTALL/* ${PACKAGE_DIR}
+
+	echo "Do packaging magic in [$PACKAGE_DIR]"
+	
+	
+	#get version info
+	source "${HERE}/../../version.mk"
+    PACKAGE_NAME="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-amd64.pkg"
+	PACKAGE_NAME_SIGNED="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-amd64-signed.pkg"
+    echo "Building package [$PACKAGE_NAME]"
+
+	#prepare
+	PAYLOAD_BUILD=${PACKAGE_DIR}/payload_build
+	SCRIPTS_BUILD=${PACKAGE_DIR}/scripts_build
+
+	mkdir -p ${PAYLOAD_BUILD}
+	mkdir -p ${SCRIPTS_BUILD}
+
+	cp -r ${BRAND_OSX_BUNDLE_DIR} ${PAYLOAD_BUILD}
+
+	cp ${PACKAGE_DIR}/preinstall ${SCRIPTS_BUILD}
+	cp ${PACKAGE_DIR}/postinstall ${SCRIPTS_BUILD}
+
+	
+	pkgbuild --root ${PAYLOAD_BUILD} \
+			 --component-plist ${PAYLOAD_BUILD}/../CellframeNode.plist \
+			 --identifier "com.demlabs.CellframeNode" \
+			 --version "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" \
+			 --install-location "/Applications" \
+			 --scripts ${SCRIPTS_BUILD} \
+			 ./${PACKAGE_NAME} 
+}
+
+NAME_OUT="$(uname -s)"
+case "${NAME_OUT}" in
+    Linux*)     MACHINE=Linux;;
+    Darwin*)    MACHINE=Mac;;
+    CYGWIN*)    MACHINE=Cygwin;;
+    MINGW*)     MACHINE=MinGw;;
+    MSYS_NT*)   MACHINE=Git;;
+    *)          MACHINE="UNKNOWN:${NAME_OUT}"
+esac
+
+PACK() 
+{
+	if [ "$MACHINE" != "Mac" ]
+	then
+		PACK_LINUX $@
+	else
+		PACK_OSX $@
+	fi
+}
