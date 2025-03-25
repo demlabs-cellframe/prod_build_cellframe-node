@@ -216,7 +216,8 @@ PACK_OSX()
 	mkdir -p ${PAYLOAD_BUILD}
 	mkdir -p ${SCRIPTS_BUILD}
 
-	cp -r ${BRAND_OSX_BUNDLE_DIR} ${PAYLOAD_BUILD}
+	cp -r ${DIST_DIR}/Applications/CellframeNode.app ${PAYLOAD_BUILD}/
+
 
 	cp ${PACKAGE_DIR}/preinstall ${SCRIPTS_BUILD}
 	cp ${PACKAGE_DIR}/postinstall ${SCRIPTS_BUILD}
