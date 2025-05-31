@@ -58,7 +58,12 @@ then
 else
     echo "Host is $MACHINE, use native build toolchain"
 
-    if [ -f "/Users/$USER/Qt/Tools/CMake/CMake.app/Contents/bin/cmake" ] 
+    # Check for QT_ROOT environment variable first
+    if [ -n "$QT_ROOT" ] && [ -f "$QT_ROOT/bin/qt-cmake" ]
+    then
+      CMAKE=("$QT_ROOT/bin/qt-cmake")
+      echo "Found QT_ROOT at $QT_ROOT, using qt-cmake from there: $CMAKE"
+    elif [ -f "/Users/$USER/Qt/Tools/CMake/CMake.app/Contents/bin/cmake" ] 
     then
       CMAKE=(/Users/$USER/Qt/Tools/CMake/CMake.app/Contents/bin/cmake )
       echo "Found QT cmake at $CMAKE, using it preferable"
