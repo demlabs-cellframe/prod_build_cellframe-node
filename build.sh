@@ -122,9 +122,10 @@ if [ "$BUILD_TARGET" == "linux" ]; then
     BUILD_OPTIONS=("-DBUILD_DIAGTOOL=ON" "${BUILD_OPTIONS[@]}")
 fi
 # Add -DBUILD_DIAGTOOL=ON the target is osx
-if [ "$BUILD_TARGET" == "osx" ]; then
-    BUILD_OPTIONS=("-DBUILD_DIAGTOOL=ON" "${BUILD_OPTIONS[@]}")
-fi
+# Disabled for macOS due to Qt5 dependency
+# if [ "$BUILD_TARGET" == "osx" ]; then
+#     BUILD_OPTIONS=("-DBUILD_DIAGTOOL=ON" "${BUILD_OPTIONS[@]}")
+# fi
 #all base logic from here
 mkdir -p ${BUILD_DIR}/build
 mkdir -p ${BUILD_DIR}/dist
