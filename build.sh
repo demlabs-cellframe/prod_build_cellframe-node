@@ -129,6 +129,9 @@ fi
 mkdir -p ${BUILD_DIR}/build
 mkdir -p ${BUILD_DIR}/dist
 
+# Add diagtool separate build directory
+mkdir -p ${BUILD_DIR}/build/diagtool/
+
 if [ "$MACHINE" != "Mac" ]
 then
   NPROC="$(nproc)"
@@ -149,3 +152,20 @@ export INSTALL_ROOT=${BUILD_DIR}/dist
 "${CMAKE[@]}" ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}  
 "${MAKE[@]}"  -j $NPROC
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
+
+# Build diagtool separately if enabled
+if [[ "${BUILD_OPTIONS[*]}" =~ "BUILD_DIAGTOOL=ON" ]]; then
+    echo "[*] Building diagtool separately for cellframe-tools..."
+    cd ${BUILD_DIR}/build/diagtool/
+    # Copy standalone CMakeLists.txt to use as main CMakeLists.txt
+    cp ${MHERE}/../diagtool/standalone-CMakeLists.txt CMakeLists.txt
+    # Copy source files
+    cp -r ${MHERE}/../diagtool/CellframeNodeDiagtool .
+    cp -r ${MHERE}/../diagtool/CellframeNodeTray .
+    cp ${MHERE}/../diagtool/main.cpp .
+    cp ${MHERE}/../diagtool/install.sh .
+    "${CMAKE[@]}" . -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:-Release}
+    "${MAKE[@]}" -j $NPROC
+    "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
+    cd ${BUILD_DIR}/build
+fi

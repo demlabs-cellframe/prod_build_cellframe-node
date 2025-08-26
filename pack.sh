@@ -94,5 +94,21 @@ echo "Pack [${BUILD_TYPE}] binaries for [$BUILD_TARGET] from [${DIST_DIR}] to [$
 
 PACK ${DIST_DIR} ${BUILD_DIR} ${OUT_DIR} ${BUILD_TYPE}
 
+# Pack diagtool separately if it was built
+DIAGTOOL_BUILD_DIR="${BUILD_DIR}/../build_diagtool_${BUILD_TARGET}_${BUILD_TYPE}/build"
+if [ -d "${DIAGTOOL_BUILD_DIR}" ] && [ -f "${DIAGTOOL_BUILD_DIR}/cellframe-diagtool" ]; then
+    echo "[*] Packing diagtool separately..."
+    DIAGTOOL_DIST_DIR="${BUILD_DIR}/../build_diagtool_${BUILD_TARGET}_${BUILD_TYPE}/dist"
+    DIAGTOOL_OUT_DIR="${BUILD_DIR}/../build_diagtool_${BUILD_TARGET}_${BUILD_TYPE}/"
+    
+    if [ "$BUILD_TARGET" == "linux" ]; then
+        cd ${DIAGTOOL_BUILD_DIR}
+        cpack ./
+        cp *.deb ${DIAGTOOL_OUT_DIR} 2>/dev/null || true
+        echo "[*] Diagtool package created: ${DIAGTOOL_OUT_DIR}"
+        ls -la ${DIAGTOOL_OUT_DIR}*.deb 2>/dev/null || echo "No diagtool packages found"
+    fi
+fi
+
 
 
