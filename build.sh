@@ -113,24 +113,13 @@ fi
 
 . ${HERE}/targets/${BUILD_TARGET}.sh
 
-# Add -DBUILD_DIAGTOOL=ON if the target is windows
-if [ "$BUILD_TARGET" == "windows" ]; then
-    BUILD_OPTIONS=("-DBUILD_DIAGTOOL=ON" "${BUILD_OPTIONS[@]}")
-fi
-# Add -DBUILD_DIAGTOOL=ON the target is linux
-if [ "$BUILD_TARGET" == "linux" ]; then
-    BUILD_OPTIONS=("-DBUILD_DIAGTOOL=ON" "${BUILD_OPTIONS[@]}")
-fi
-# Add -DBUILD_DIAGTOOL=ON the target is osx
-if [ "$BUILD_TARGET" == "osx" ]; then
-    BUILD_OPTIONS=("-DBUILD_DIAGTOOL=ON" "${BUILD_OPTIONS[@]}")
-fi
+# Diagtool is now a separate package
+# Use diagtool/build-diagtool.sh for standalone builds
 #all base logic from here
 mkdir -p ${BUILD_DIR}/build
 mkdir -p ${BUILD_DIR}/dist
 
-# Add diagtool separate build directory
-mkdir -p ${BUILD_DIR}/build/diagtool/
+# Diagtool builds separately now
 
 if [ "$MACHINE" != "Mac" ]
 then
@@ -153,19 +142,4 @@ export INSTALL_ROOT=${BUILD_DIR}/dist
 "${MAKE[@]}"  -j $NPROC
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
 
-# Build diagtool separately if enabled
-if [[ "${BUILD_OPTIONS[*]}" =~ "BUILD_DIAGTOOL=ON" ]]; then
-    echo "[*] Building diagtool separately for cellframe-tools..."
-    cd ${BUILD_DIR}/build/diagtool/
-    # Copy standalone CMakeLists.txt to use as main CMakeLists.txt
-    cp ${MHERE}/../diagtool/standalone-CMakeLists.txt CMakeLists.txt
-    # Copy source files
-    cp -r ${MHERE}/../diagtool/CellframeNodeDiagtool .
-    cp -r ${MHERE}/../diagtool/CellframeNodeTray .
-    cp ${MHERE}/../diagtool/main.cpp .
-    cp ${MHERE}/../diagtool/install.sh .
-    "${CMAKE[@]}" . -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:-Release}
-    "${MAKE[@]}" -j $NPROC
-    "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
-    cd ${BUILD_DIR}/build
-fi
+# Diagtool is built separately using diagtool/build-diagtool.sh
