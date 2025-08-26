@@ -114,9 +114,7 @@ PACK_LINUX()
 		rcodesign sign --code-signature-flags runtime \
 		--p12-file ${OSX_PKEY_INSTALLER} --p12-password ${OSX_PKEY_INSTALLER_PASS} \
 		${PAYLOAD_BUILD}/CellframeNode.app/Contents/MacOS/cellframe-node-config
-		rcodesign sign --code-signature-flags runtime \
-  		--p12-file ${OSX_PKEY_INSTALLER} --p12-password ${OSX_PKEY_INSTALLER_PASS} \
-  		${PAYLOAD_BUILD}/CellframeNode.app/Contents/MacOS/cellframe-diagtool
+		# diagtool signing removed - now a separate package
 	fi
 
 	cp ${PACKAGE_DIR}/preinstall ${SCRIPTS_BUILD}
