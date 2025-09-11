@@ -218,6 +218,49 @@ PACK_OSX()
 	cp ${PACKAGE_DIR}/preinstall ${SCRIPTS_BUILD}
 	cp ${PACKAGE_DIR}/postinstall ${SCRIPTS_BUILD}
 
+	# Native code signing on macOS host (codesign for app, productsign for pkg)
+	# Expected env (provided by --sign config):
+	#   OSX_CODESIGN_IDENTITY  - Developer ID Application identity name
+	#   OSX_INSTALLER_IDENTITY - Developer ID Installer identity name
+	# Optional:
+	#   OSX_ENTITLEMENTS       - Path to entitlements.plist for app signing
+	#   OSX_NOTARY_KEY_PATH / OSX_NOTARY_KEY_ID / OSX_NOTARY_ISSUER_ID - for notarytool
+	if [ -n "${OSX_CODESIGN_IDENTITY}" ]; then
+		echo "Code-signing inner binaries with identity: ${OSX_CODESIGN_IDENTITY}"
+		for bin in cellframe-node cellframe-node-cli cellframe-node-tool cellframe-node-config; do
+			if [ -f "${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${bin}" ]; then
+				if [ -n "${OSX_ENTITLEMENTS}" ] && [ -f "${OSX_ENTITLEMENTS}" ]; then
+					codesign --force --options runtime --timestamp \
+						--entitlements "${OSX_ENTITLEMENTS}" \
+						--sign "${OSX_CODESIGN_IDENTITY}" \
+						"${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${bin}"
+				else
+					codesign --force --options runtime --timestamp \
+						--sign "${OSX_CODESIGN_IDENTITY}" \
+						"${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${bin}"
+				fi
+			fi
+		done
+
+		echo "Code-signing app bundle: ${PAYLOAD_BUILD}/${BRAND}.app"
+		if [ -n "${OSX_ENTITLEMENTS}" ] && [ -f "${OSX_ENTITLEMENTS}" ]; then
+			codesign --force --options runtime --timestamp \
+				--entitlements "${OSX_ENTITLEMENTS}" \
+				--sign "${OSX_CODESIGN_IDENTITY}" \
+				"${PAYLOAD_BUILD}/${BRAND}.app"
+		else
+			codesign --force --options runtime --timestamp \
+				--sign "${OSX_CODESIGN_IDENTITY}" \
+				"${PAYLOAD_BUILD}/${BRAND}.app"
+		fi
+
+		# Verify app signature before packaging
+		codesign --verify --deep --strict --verbose=2 "${PAYLOAD_BUILD}/${BRAND}.app"
+		spctl -a -vv "${PAYLOAD_BUILD}/${BRAND}.app" || true
+	else
+		echo "OSX_CODESIGN_IDENTITY is not set. App will NOT be signed on macOS host."
+	fi
+
 	
 	pkgbuild --root ${PAYLOAD_BUILD} \
 			 --component-plist ${PAYLOAD_BUILD}/../CellframeNode.plist \
@@ -226,6 +269,36 @@ PACK_OSX()
 			 --install-location "/Applications" \
 			 --scripts ${SCRIPTS_BUILD} \
 			 ./${PACKAGE_NAME} 
+
+	# Sign the pkg if Installer identity provided
+	if [ -n "${OSX_INSTALLER_IDENTITY}" ]; then
+		echo "Signing pkg with Installer identity: ${OSX_INSTALLER_IDENTITY}"
+		productsign --sign "${OSX_INSTALLER_IDENTITY}" "./${PACKAGE_NAME}" "./${PACKAGE_NAME_SIGNED}"
+		# Verify pkg signature
+		pkgutil --check-signature "./${PACKAGE_NAME_SIGNED}" || true
+	else
+		echo "OSX_INSTALLER_IDENTITY is not set. PKG will NOT be signed on macOS host."
+	fi
+
+	# Optional notarization if API key is provided
+	if [ -n "${OSX_NOTARY_KEY_PATH}" ] && [ -n "${OSX_NOTARY_KEY_ID}" ] && [ -n "${OSX_NOTARY_ISSUER_ID}" ]; then
+		PKG_TO_NOTARIZE="./${PACKAGE_NAME_SIGNED}"
+		if [ ! -f "${PKG_TO_NOTARIZE}" ]; then
+			PKG_TO_NOTARIZE="./${PACKAGE_NAME}"
+		fi
+		if [ -f "${PKG_TO_NOTARIZE}" ]; then
+			echo "Submitting ${PKG_TO_NOTARIZE} for notarization via notarytool"
+			xcrun notarytool submit "${PKG_TO_NOTARIZE}" \
+				--key "${OSX_NOTARY_KEY_PATH}" \
+				--key-id "${OSX_NOTARY_KEY_ID}" \
+				--issuer "${OSX_NOTARY_ISSUER_ID}" \
+				--wait || true
+			# Staple if signed pkg exists
+			if [ -f "./${PACKAGE_NAME_SIGNED}" ]; then
+				xcrun stapler staple "./${PACKAGE_NAME_SIGNED}" || true
+			fi
+		fi
+	fi
 }
 
 NAME_OUT="$(uname -s)"
