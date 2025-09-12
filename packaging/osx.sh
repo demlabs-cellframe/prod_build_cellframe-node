@@ -203,7 +203,9 @@ PACK_OSX()
 	#get version info
 	source "${HERE}/../../version.mk"
     PACKAGE_NAME="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-amd64.pkg"
-	PACKAGE_NAME_SIGNED="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-amd64-signed.pkg"
+    PACKAGE_NAME_SIGNED="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-amd64-signed.pkg"
+    PKG_PATH="${OUT_DIR}/${PACKAGE_NAME}"
+    PKG_PATH_SIGNED="${OUT_DIR}/${PACKAGE_NAME_SIGNED}"
     echo "Building package [$PACKAGE_NAME]"
 
 	#prepare
@@ -268,23 +270,23 @@ PACK_OSX()
 			 --version "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" \
 			 --install-location "/Applications" \
 			 --scripts ${SCRIPTS_BUILD} \
-			 ./${PACKAGE_NAME} 
+			 "${PKG_PATH}" 
 
 	# Sign the pkg if Installer identity provided
 	if [ -n "${OSX_INSTALLER_IDENTITY}" ]; then
 		echo "Signing pkg with Installer identity: ${OSX_INSTALLER_IDENTITY}"
-		productsign --sign "${OSX_INSTALLER_IDENTITY}" "./${PACKAGE_NAME}" "./${PACKAGE_NAME_SIGNED}"
+		productsign --sign "${OSX_INSTALLER_IDENTITY}" "${PKG_PATH}" "${PKG_PATH_SIGNED}"
 		# Verify pkg signature
-		pkgutil --check-signature "./${PACKAGE_NAME_SIGNED}" || true
+		pkgutil --check-signature "${PKG_PATH_SIGNED}" || true
 	else
 		echo "OSX_INSTALLER_IDENTITY is not set. PKG will NOT be signed on macOS host."
 	fi
 
 	# Optional notarization if API key is provided
 	if [ -n "${OSX_NOTARY_KEY_PATH}" ] && [ -n "${OSX_NOTARY_KEY_ID}" ] && [ -n "${OSX_NOTARY_ISSUER_ID}" ]; then
-		PKG_TO_NOTARIZE="./${PACKAGE_NAME_SIGNED}"
+		PKG_TO_NOTARIZE="${PKG_PATH_SIGNED}"
 		if [ ! -f "${PKG_TO_NOTARIZE}" ]; then
-			PKG_TO_NOTARIZE="./${PACKAGE_NAME}"
+			PKG_TO_NOTARIZE="${PKG_PATH}"
 		fi
 		if [ -f "${PKG_TO_NOTARIZE}" ]; then
 			echo "Submitting ${PKG_TO_NOTARIZE} for notarization via notarytool"
@@ -294,8 +296,8 @@ PACK_OSX()
 				--issuer "${OSX_NOTARY_ISSUER_ID}" \
 				--wait || true
 			# Staple if signed pkg exists
-			if [ -f "./${PACKAGE_NAME_SIGNED}" ]; then
-				xcrun stapler staple "./${PACKAGE_NAME_SIGNED}" || true
+			if [ -f "${PKG_PATH_SIGNED}" ]; then
+				xcrun stapler staple "${PKG_PATH_SIGNED}" || true
 			fi
 		fi
 	fi
