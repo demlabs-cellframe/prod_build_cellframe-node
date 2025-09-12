@@ -229,7 +229,14 @@ PACK_OSX()
 	#   OSX_NOTARY_KEY_PATH / OSX_NOTARY_KEY_ID / OSX_NOTARY_ISSUER_ID - for notarytool
 	if [ -n "${OSX_CODESIGN_IDENTITY}" ]; then
 		echo "Code-signing inner binaries with identity: ${OSX_CODESIGN_IDENTITY}"
-		for bin in cellframe-node cellframe-node-cli cellframe-node-tool cellframe-node-config; do
+		# Ensure executables are marked as executable before signing
+		for b in cellframe-node-config cellframe-node-tool cellframe-node-cli cellframe-node; do
+			if [ -f "${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${b}" ]; then
+				chmod +x "${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${b}" || true
+			fi
+		done
+		# Sign helpers first, then main binary
+		for bin in cellframe-node-config cellframe-node-tool cellframe-node-cli cellframe-node; do
 			if [ -f "${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${bin}" ]; then
 				if [ -n "${OSX_ENTITLEMENTS}" ] && [ -f "${OSX_ENTITLEMENTS}" ]; then
 					codesign --force --options runtime --timestamp \
@@ -246,12 +253,12 @@ PACK_OSX()
 
 		echo "Code-signing app bundle: ${PAYLOAD_BUILD}/${BRAND}.app"
 		if [ -n "${OSX_ENTITLEMENTS}" ] && [ -f "${OSX_ENTITLEMENTS}" ]; then
-			codesign --force --options runtime --timestamp \
+			codesign --force --options runtime --timestamp --deep \
 				--entitlements "${OSX_ENTITLEMENTS}" \
 				--sign "${OSX_CODESIGN_IDENTITY}" \
 				"${PAYLOAD_BUILD}/${BRAND}.app"
 		else
-			codesign --force --options runtime --timestamp \
+			codesign --force --options runtime --timestamp --deep \
 				--sign "${OSX_CODESIGN_IDENTITY}" \
 				"${PAYLOAD_BUILD}/${BRAND}.app"
 		fi
