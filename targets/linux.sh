@@ -19,9 +19,27 @@ RDIR=$( dirname "$SOURCE" )
 DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 HERE="$DIR"
 
-CMAKE=(cmake)
+# Check for cross-compilation architecture
+if [ -n "$CROSS_ARCH" ]; then
+  case "$CROSS_ARCH" in
+    arm64)
+      CMAKE=(cmake-arm64)
+      ;;
+    arm32)
+      CMAKE=(cmake-arm32)
+      ;;
+    *)
+      echo "Error: Unknown cross-arch [$CROSS_ARCH]"
+      exit 255
+      ;;
+  esac
+  echo "Linux target (cross-compile for $CROSS_ARCH)"
+else
+  CMAKE=(cmake)
+  echo "Linux target"
+fi
+
 MAKE=(make)
 
-echo "Linux target"
 echo "CMAKE=${CMAKE[@]}"
 echo "MAKE=${MAKE[@]}"

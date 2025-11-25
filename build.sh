@@ -36,11 +36,15 @@ esac
 #validate input params
 . ${MHERE}/validate.sh
 
+CROSS_ARCHS=(arm64 arm32)
+
 Help()
 {
    echo "cellframe-node build"
    echo "Usage: build.sh [--target ${TARGETS}] [${BUILD_TYPES}]  [OPTIONS]"
-   echo "options:   -DWHATEVER=ANYTHING will be passed to cmake as defines"
+   echo "options:"
+   echo "   --cross-arch [${CROSS_ARCHS[@]}]  Cross-compile for specified architecture (Linux only)"
+   echo "   -DWHATEVER=ANYTHING               will be passed to cmake as defines"
    echo
 }
 
@@ -58,6 +62,11 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
+    --cross-arch)
+      CROSS_ARCH="$2"
+      shift # past argument
+      shift # past value
+      ;;
     *)
       POSITIONAL_ARGS+=("$1") # save positional arg
       shift # past argument
@@ -68,7 +77,7 @@ done
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 BUILD_TYPE="${1:-release}"
-BUILD_OPTIONS="${@:2}"
+BUILD_OPTIONS=("${@:2}")
 
 
 DEFAULT_TARGET="linux"
@@ -95,19 +104,44 @@ fi
 echo "Host machin is $MACHINE"
 BUILD_TARGET="${TARGET:-$DEFAULT_TARGET}"
 
-BUILD_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}
+# Validate cross-arch (only for Linux)
+if [ -n "$CROSS_ARCH" ]; then
+  if [ "$BUILD_TARGET" != "linux" ]; then
+    echo "Error: --cross-arch is only supported for Linux target"
+    exit 255
+  fi
+  containsElement "$CROSS_ARCH" "${CROSS_ARCHS[@]}" || {
+    echo "Unknown cross-arch [$CROSS_ARCH]"
+    echo "Available cross-archs are [${CROSS_ARCHS[@]}]"
+    exit 255
+  }
+  BUILD_DIR=${PWD}/build_${BUILD_TARGET}_${CROSS_ARCH}_${BUILD_TYPE}
+  export CROSS_ARCH
+  # Set target architecture for CMake (for correct Python download and packaging)
+  case "$CROSS_ARCH" in
+    arm64)
+      CROSS_ARCH_CMAKE="arm64"
+      ;;
+    arm32)
+      CROSS_ARCH_CMAKE="armhf"
+      ;;
+  esac
+  BUILD_OPTIONS+=("-DCPACK_TARGET_ARCHITECTURE=${CROSS_ARCH_CMAKE}")
+else
+  BUILD_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}
+fi
 
 VALIDATE_TARGET $TARGET
 VALIDATE_BUILD_TYPE $BUILD_TYPE
 
-#append qmake debug\release qmake options for this
+#append cmake debug\release cmake options for this
 if [ "${BUILD_TYPE}" = "debug" ]; then
-    BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DCMAKE_BUILD_TYPE=Debug"
+    BUILD_OPTIONS+=("-DCMAKE_BUILD_TYPE=Debug")
 else
     if [ "${BUILD_TYPE}" = "rwd" ]; then
-      BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+      BUILD_OPTIONS+=("-DCMAKE_BUILD_TYPE=RelWithDebInfo")
     else
-      BUILD_OPTIONS[${#BUILD_OPTIONS[@]}]="-DCMAKE_BUILD_TYPE=Release"
+      BUILD_OPTIONS+=("-DCMAKE_BUILD_TYPE=Release")
     fi
 fi
 
