@@ -18,11 +18,15 @@ containsElement () {
   return 1
 }
 
+CROSS_ARCHS=(arm64 arm32)
+
 Help()
 {
    echo "cellframe-dashboard pack"
    echo "Usage: pack.sh [--target ${TARGETS}] [${BUILD_TYPES}]  [OPTIONS]"
-   echo "--sign PATH should provide a path to file with env variables"
+   echo "options:"
+   echo "   --cross-arch [${CROSS_ARCHS[@]}]  Cross-compiled architecture (Linux only)"
+   echo "   --sign PATH                       should provide a path to file with env variables"
 }
 
 POSITIONAL_ARGS=()
@@ -41,6 +45,11 @@ while [[ $# -gt 0 ]]; do
       ;;
     -s|--sign)
       SIGNCONFIG="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    --cross-arch)
+      CROSS_ARCH="$2"
       shift # past argument
       shift # past value
       ;;
@@ -65,9 +74,26 @@ BUILD_TARGET="${TARGET:-linux}"
 VALIDATE_TARGET $TARGET
 VALIDATE_BUILD_TYPE $BUILD_TYPE
 
-DIST_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}/dist
-BUILD_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}/build
-OUT_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}/
+# Validate cross-arch (only for Linux)
+if [ -n "$CROSS_ARCH" ]; then
+  if [ "$BUILD_TARGET" != "linux" ]; then
+    echo "Error: --cross-arch is only supported for Linux target"
+    exit 255
+  fi
+  containsElement "$CROSS_ARCH" "${CROSS_ARCHS[@]}" || {
+    echo "Unknown cross-arch [$CROSS_ARCH]"
+    echo "Available cross-archs are [${CROSS_ARCHS[@]}]"
+    exit 255
+  }
+  DIST_DIR=${PWD}/build_${BUILD_TARGET}_${CROSS_ARCH}_${BUILD_TYPE}/dist
+  BUILD_DIR=${PWD}/build_${BUILD_TARGET}_${CROSS_ARCH}_${BUILD_TYPE}/build
+  OUT_DIR=${PWD}/build_${BUILD_TARGET}_${CROSS_ARCH}_${BUILD_TYPE}/
+  export CROSS_ARCH
+else
+  DIST_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}/dist
+  BUILD_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}/build
+  OUT_DIR=${PWD}/build_${BUILD_TARGET}_${BUILD_TYPE}/
+fi
 
 #we care only about dist dir, i think
 #[ ! -d ${DIST_DIR} ] && { echo "No build found: $BUILD_TARGET" && exit 255; }
