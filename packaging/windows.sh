@@ -18,7 +18,17 @@ PACK()
     ARCH=$(dpkg --print-architecture)
     source "${HERE}/../version.mk"
     PACKAGE_NAME="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-amd64.exe"
-    makensis -V4 -DAPP_VERSION_VISUAL=${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH} -DAPP_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH} ${DIST_DIR}/cellframe-node.nsis
+    NSIS_ROOT="${DIST_DIR}/opt/cellframe-node"
+    NSIS_PATCH=${VERSION_PATCH}
+    if ! [[ "${NSIS_PATCH}" =~ ^[0-9]+$ ]]; then
+        NSIS_PATCH=0
+    fi
+    NSIS_VERSION="${VERSION_MAJOR}.${VERSION_MINOR}.${NSIS_PATCH}.0"
+    # Ensure NSIS script and assets are next to it so relative paths resolve correctly
+    cp "${NSIS_ROOT}/cellframe-node.nsis" "${DIST_DIR}/"
+    cp "${NSIS_ROOT}/cellframe.ico" "${DIST_DIR}/"
+    cp "${NSIS_ROOT}/cellframe.bmp" "${DIST_DIR}/"
+    makensis -V4 -DAPP_VERSION_VISUAL=${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH} -DAPP_VERSION=${NSIS_VERSION} "${DIST_DIR}/cellframe-node.nsis"
 
     cp $DIST_DIR/*.exe $OUT_DIR/
 }
