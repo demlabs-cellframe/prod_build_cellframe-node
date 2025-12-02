@@ -260,7 +260,7 @@ PACK_OSX()
 			# Sign all .so extension modules first
 			echo "   Signing Python extension modules (.so files)..."
 			find "${PYTHON_FW}" -name "*.so" -type f 2>/dev/null | while read so_file; do
-				codesign --force --options runtime --timestamp \
+				codesign --force --deep --options runtime --timestamp \
 					--sign "${CODESIGN_ID}" \
 					"${so_file}" 2>/dev/null || true
 			done
@@ -271,7 +271,7 @@ PACK_OSX()
 				PY_BIN_PATH="${PYTHON_FW}/Versions/3.10/bin/${py_bin}"
 				if [ -f "${PY_BIN_PATH}" ]; then
 					chmod +x "${PY_BIN_PATH}" || true
-					codesign --force --options runtime --timestamp \
+					codesign --force --deep --options runtime --timestamp \
 						--sign "${CODESIGN_ID}" \
 						"${PY_BIN_PATH}"
 				fi
@@ -281,20 +281,15 @@ PACK_OSX()
 			echo "   Signing Python dylib..."
 			PYTHON_DYLIB="${PYTHON_FW}/Versions/3.10/Python"
 			if [ -f "${PYTHON_DYLIB}" ]; then
-				codesign --force --options runtime --timestamp \
+				codesign --force --deep --options runtime --timestamp \
 					--sign "${CODESIGN_ID}" \
 					"${PYTHON_DYLIB}"
 			fi
 			
-			# Sign the versioned framework directory
-			echo "   Signing Python.framework/Versions/3.10..."
-			codesign --force --options runtime --timestamp \
-				--sign "${CODESIGN_ID}" \
-				"${PYTHON_FW}/Versions/3.10"
 			
 			# Sign the entire framework bundle
 			echo "   Signing Python.framework bundle..."
-			codesign --force --options runtime --timestamp \
+			codesign --force --deep --options runtime --timestamp \
 				--sign "${CODESIGN_ID}" \
 				"${PYTHON_FW}"
 			
@@ -308,14 +303,14 @@ PACK_OSX()
 		# =============================================================================
 		echo "📦 Signing other frameworks..."
 		find "${FRAMEWORKS_DIR}" -name "*.framework" -not -path "*/Python.framework*" -type d 2>/dev/null | while read fw; do
-			codesign --force --options runtime --timestamp \
+			codesign --force --deep --options runtime --timestamp \
 				--sign "${CODESIGN_ID}" \
 				"${fw}" || true
 		done
 		
 		# Sign any dylibs in Frameworks
 		find "${FRAMEWORKS_DIR}" -name "*.dylib" -type f 2>/dev/null | while read dylib; do
-			codesign --force --options runtime --timestamp \
+			codesign --force --deep --options runtime --timestamp \
 				--sign "${CODESIGN_ID}" \
 				"${dylib}" || true
 		done
@@ -336,7 +331,7 @@ PACK_OSX()
 		for bin in cellframe-node-config cellframe-node-tool cellframe-node-cli cellframe-node; do
 			if [ -f "${APP_BUNDLE}/Contents/MacOS/${bin}" ]; then
 				echo "   Signing ${bin}..."
-				codesign --force --options runtime --timestamp \
+				codesign --force --deep --options runtime --timestamp \
 					--entitlements "${OSX_ENTITLEMENTS}" \
 					--sign "${CODESIGN_ID}" \
 					"${APP_BUNDLE}/Contents/MacOS/${bin}"
@@ -347,7 +342,7 @@ PACK_OSX()
 		# Step 4: Sign the entire app bundle
 		# =============================================================================
 		echo "📱 Signing app bundle: ${APP_BUNDLE}"
-		codesign --force --options runtime --timestamp \
+		codesign --force --deep --options runtime --timestamp \
 			--entitlements "${OSX_ENTITLEMENTS}" \
 			--sign "${CODESIGN_ID}" \
 			"${APP_BUNDLE}"
