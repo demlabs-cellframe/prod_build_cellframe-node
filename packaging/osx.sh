@@ -220,7 +220,8 @@ PACK_OSX()
 	mkdir -p ${PAYLOAD_BUILD}
 	mkdir -p ${SCRIPTS_BUILD}
 
-	cp -r ${BRAND_OSX_BUNDLE_DIR} ${PAYLOAD_BUILD}
+	# Use ditto instead of cp -r to properly preserve symlinks in frameworks
+	ditto ${BRAND_OSX_BUNDLE_DIR} ${PAYLOAD_BUILD}/${BRAND}.app
 
 	cp ${PACKAGE_DIR}/preinstall ${SCRIPTS_BUILD}
 	cp ${PACKAGE_DIR}/postinstall ${SCRIPTS_BUILD}
@@ -250,6 +251,36 @@ PACK_OSX()
 		APP_BUNDLE="${PAYLOAD_BUILD}/${BRAND}.app"
 		FRAMEWORKS_DIR="${APP_BUNDLE}/Contents/Frameworks"
 		PYTHON_FW="${FRAMEWORKS_DIR}/Python.framework"
+		
+		# =============================================================================
+		# Step 0: Fix Python.framework structure (symlinks required for codesign)
+		# =============================================================================
+		if [ -d "${PYTHON_FW}" ]; then
+			echo "🔧 Fixing Python.framework bundle structure..."
+			
+			# Check if Python is a file instead of a symlink
+			if [ -f "${PYTHON_FW}/Python" ] && [ ! -L "${PYTHON_FW}/Python" ]; then
+				echo "   Replacing top-level Python file with symlink..."
+				rm -f "${PYTHON_FW}/Python"
+				ln -s "Versions/Current/Python" "${PYTHON_FW}/Python"
+			fi
+			
+			# Check if Resources is a directory instead of a symlink
+			if [ -d "${PYTHON_FW}/Resources" ] && [ ! -L "${PYTHON_FW}/Resources" ]; then
+				echo "   Replacing top-level Resources directory with symlink..."
+				rm -rf "${PYTHON_FW}/Resources"
+				ln -s "Versions/Current/Resources" "${PYTHON_FW}/Resources"
+			fi
+			
+			# Check if Headers exists and is not a symlink
+			if [ -d "${PYTHON_FW}/Headers" ] && [ ! -L "${PYTHON_FW}/Headers" ]; then
+				echo "   Replacing top-level Headers directory with symlink..."
+				rm -rf "${PYTHON_FW}/Headers"
+				ln -s "Versions/Current/Headers" "${PYTHON_FW}/Headers"
+			fi
+			
+			echo "✅ Python.framework structure fixed"
+		fi
 		
 		# =============================================================================
 		# Step 1: Sign Python.framework components (deepest level first)
