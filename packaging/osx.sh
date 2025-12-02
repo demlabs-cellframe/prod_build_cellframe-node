@@ -235,45 +235,131 @@ PACK_OSX()
 	# Support both OSX_CODESIGN_IDENTITY and OSX_SIGNING_IDENTITY
 	CODESIGN_ID="${OSX_CODESIGN_IDENTITY:-${OSX_SIGNING_IDENTITY}}"
 	
+	# Support both OSX_INSTALLER_IDENTITY and OSX_INSTALLER_SIGNING_IDENTITY
+	OSX_INSTALLER_IDENTITY="${OSX_INSTALLER_IDENTITY:-${OSX_INSTALLER_SIGNING_IDENTITY}}"
+	
+	# Use bundled entitlements if not provided externally
+	if [ -z "${OSX_ENTITLEMENTS}" ] || [ ! -f "${OSX_ENTITLEMENTS}" ]; then
+		OSX_ENTITLEMENTS="${HERE}/../../os/macos/entitlements.plist"
+	fi
+	
 	if [ -n "${CODESIGN_ID}" ]; then
-		echo "Code-signing inner binaries with identity: ${CODESIGN_ID}"
+		echo "Code-signing with identity: ${CODESIGN_ID}"
+		echo "Using entitlements: ${OSX_ENTITLEMENTS}"
+		
+		APP_BUNDLE="${PAYLOAD_BUILD}/${BRAND}.app"
+		FRAMEWORKS_DIR="${APP_BUNDLE}/Contents/Frameworks"
+		PYTHON_FW="${FRAMEWORKS_DIR}/Python.framework"
+		
+		# =============================================================================
+		# Step 1: Sign Python.framework components (deepest level first)
+		# =============================================================================
+		if [ -d "${PYTHON_FW}" ]; then
+			echo "📦 Signing Python.framework components..."
+			
+			# Sign all .so extension modules first
+			echo "   Signing Python extension modules (.so files)..."
+			find "${PYTHON_FW}" -name "*.so" -type f 2>/dev/null | while read so_file; do
+				codesign --force --options runtime --timestamp \
+					--sign "${CODESIGN_ID}" \
+					"${so_file}" 2>/dev/null || true
+			done
+			
+			# Sign Python executables in bin/
+			echo "   Signing Python executables..."
+			for py_bin in python3.10 pip3; do
+				PY_BIN_PATH="${PYTHON_FW}/Versions/3.10/bin/${py_bin}"
+				if [ -f "${PY_BIN_PATH}" ]; then
+					chmod +x "${PY_BIN_PATH}" || true
+					codesign --force --options runtime --timestamp \
+						--sign "${CODESIGN_ID}" \
+						"${PY_BIN_PATH}"
+				fi
+			done
+			
+			# Sign the main Python dylib
+			echo "   Signing Python dylib..."
+			PYTHON_DYLIB="${PYTHON_FW}/Versions/3.10/Python"
+			if [ -f "${PYTHON_DYLIB}" ]; then
+				codesign --force --options runtime --timestamp \
+					--sign "${CODESIGN_ID}" \
+					"${PYTHON_DYLIB}"
+			fi
+			
+			# Sign the versioned framework directory
+			echo "   Signing Python.framework/Versions/3.10..."
+			codesign --force --options runtime --timestamp \
+				--sign "${CODESIGN_ID}" \
+				"${PYTHON_FW}/Versions/3.10"
+			
+			# Sign the entire framework bundle
+			echo "   Signing Python.framework bundle..."
+			codesign --force --options runtime --timestamp \
+				--sign "${CODESIGN_ID}" \
+				"${PYTHON_FW}"
+			
+			echo "✅ Python.framework signed"
+		else
+			echo "⚠️  Python.framework not found at ${PYTHON_FW}, skipping..."
+		fi
+		
+		# =============================================================================
+		# Step 2: Sign other frameworks (if any)
+		# =============================================================================
+		echo "📦 Signing other frameworks..."
+		find "${FRAMEWORKS_DIR}" -name "*.framework" -not -path "*/Python.framework*" -type d 2>/dev/null | while read fw; do
+			codesign --force --options runtime --timestamp \
+				--sign "${CODESIGN_ID}" \
+				"${fw}" || true
+		done
+		
+		# Sign any dylibs in Frameworks
+		find "${FRAMEWORKS_DIR}" -name "*.dylib" -type f 2>/dev/null | while read dylib; do
+			codesign --force --options runtime --timestamp \
+				--sign "${CODESIGN_ID}" \
+				"${dylib}" || true
+		done
+		
+		# =============================================================================
+		# Step 3: Sign main application executables
+		# =============================================================================
+		echo "⚙️  Signing main application executables..."
+		
 		# Ensure executables are marked as executable before signing
 		for b in cellframe-node-config cellframe-node-tool cellframe-node-cli cellframe-node; do
-			if [ -f "${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${b}" ]; then
-				chmod +x "${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${b}" || true
+			if [ -f "${APP_BUNDLE}/Contents/MacOS/${b}" ]; then
+				chmod +x "${APP_BUNDLE}/Contents/MacOS/${b}" || true
 			fi
 		done
+		
 		# Sign helpers first, then main binary
 		for bin in cellframe-node-config cellframe-node-tool cellframe-node-cli cellframe-node; do
-			if [ -f "${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${bin}" ]; then
-				if [ -n "${OSX_ENTITLEMENTS}" ] && [ -f "${OSX_ENTITLEMENTS}" ]; then
-					codesign --force --options runtime --timestamp \
-						--entitlements "${OSX_ENTITLEMENTS}" \
-						--sign "${CODESIGN_ID}" \
-						"${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${bin}"
-				else
-					codesign --force --options runtime --timestamp \
-						--sign "${CODESIGN_ID}" \
-						"${PAYLOAD_BUILD}/${BRAND}.app/Contents/MacOS/${bin}"
-				fi
+			if [ -f "${APP_BUNDLE}/Contents/MacOS/${bin}" ]; then
+				echo "   Signing ${bin}..."
+				codesign --force --options runtime --timestamp \
+					--entitlements "${OSX_ENTITLEMENTS}" \
+					--sign "${CODESIGN_ID}" \
+					"${APP_BUNDLE}/Contents/MacOS/${bin}"
 			fi
 		done
-
-		echo "Code-signing app bundle: ${PAYLOAD_BUILD}/${BRAND}.app"
-		if [ -n "${OSX_ENTITLEMENTS}" ] && [ -f "${OSX_ENTITLEMENTS}" ]; then
-			codesign --force --options runtime --timestamp --deep \
-				--entitlements "${OSX_ENTITLEMENTS}" \
-				--sign "${CODESIGN_ID}" \
-				"${PAYLOAD_BUILD}/${BRAND}.app"
-		else
-			codesign --force --options runtime --timestamp --deep \
-				--sign "${CODESIGN_ID}" \
-				"${PAYLOAD_BUILD}/${BRAND}.app"
-		fi
-
-		# Verify app signature before packaging
-		codesign --verify --deep --strict --verbose=2 "${PAYLOAD_BUILD}/${BRAND}.app"
-		spctl -a -vv "${PAYLOAD_BUILD}/${BRAND}.app" || true
+		
+		# =============================================================================
+		# Step 4: Sign the entire app bundle
+		# =============================================================================
+		echo "📱 Signing app bundle: ${APP_BUNDLE}"
+		codesign --force --options runtime --timestamp \
+			--entitlements "${OSX_ENTITLEMENTS}" \
+			--sign "${CODESIGN_ID}" \
+			"${APP_BUNDLE}"
+		
+		# =============================================================================
+		# Step 5: Verify signatures
+		# =============================================================================
+		echo "🔍 Verifying signatures..."
+		codesign --verify --deep --strict --verbose=2 "${APP_BUNDLE}"
+		spctl -a -vv "${APP_BUNDLE}" || true
+		
+		echo "✅ Code signing completed"
 	else
 		echo "WARNING: OSX_SIGNING_IDENTITY / OSX_CODESIGN_IDENTITY is not set."
 		echo "         App will NOT be signed on macOS host."
