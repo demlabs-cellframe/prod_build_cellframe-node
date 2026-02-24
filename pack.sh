@@ -9,7 +9,15 @@ else
 	HERE=`dirname ${CMD}`
 fi
 
-export SOURCES=${HERE}/../
+_find_root="${HERE}"
+while [ ! -f "${_find_root}/CMakeLists.txt" ] && [ "${_find_root}" != "/" ]; do
+    _find_root=$(dirname "${_find_root}")
+done
+if [ ! -f "${_find_root}/CMakeLists.txt" ]; then
+    echo "Error: Cannot find project root (no CMakeLists.txt found)" >&2
+    exit 1
+fi
+export SOURCES="${_find_root}"
 
 containsElement () {
   local e match="$1"

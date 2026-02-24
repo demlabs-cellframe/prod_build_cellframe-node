@@ -16,7 +16,7 @@ PACK()
     BUILD_DIR=$2
     OUT_DIR=$3
     ARCH=$(dpkg --print-architecture)
-    source "${HERE}/../version.mk"
+    source "${SOURCES}/version.mk"
     PACKAGE_NAME="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-amd64.exe"
     makensis -V4 -DAPP_VERSION_VISUAL=${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH} -DAPP_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH} ${DIST_DIR}/cellframe-node.nsis
 

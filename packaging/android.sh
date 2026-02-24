@@ -43,7 +43,7 @@ fi
 
 FILL_VERSION()
 {
-    source "${HERE}/../version.mk"
+    source "${SOURCES}/version.mk"
 
     VERSION_UPDATE="s|VERSION_MAJOR|${VERSION_MAJOR}|g"
     BUILD_UPDATE="s|VERSION_MINOR|${VERSION_MINOR}|g"
@@ -65,7 +65,7 @@ PACK()
     BUILD_DIR=$2
     OUT_DIR=$3
 
-    cd $HERE/../../os/android
+    cd ${SOURCES}/os/android
     ./gradlew assembleRelease
 
     if [ "$APK_SIGN_POSSIBLE" -eq "1" ]; then

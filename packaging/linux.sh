@@ -22,7 +22,7 @@ HERE="$DIR"
 
 FILL_VERSION()
 {
-    source "${HERE}/../version.mk"
+    source "${SOURCES}/version.mk"
 
     VERSION_UPDATE="s|VERSION_MAJOR|${VERSION_MAJOR}|g"
     BUILD_UPDATE="s|VERSION_MINOR|${VERSION_MINOR}|g"

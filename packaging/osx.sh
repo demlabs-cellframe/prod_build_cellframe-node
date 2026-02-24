@@ -80,13 +80,13 @@ PACK_LINUX()
     #cp -r ${DIST_DIR}/Applications/CellframeNode.app ${PACKAGE_DIR}/CellframeNode.app
 
     #copy pkginstall
-	cp  ${HERE}/../../os/macos/PKGINSTALL/* ${PACKAGE_DIR}
+	cp  ${SOURCES}/os/macos/PKGINSTALL/* ${PACKAGE_DIR}
 
 	echo "Do packaging magic in [$PACKAGE_DIR]"
 	cd $wd
 	
 	#get version info
-	source "${HERE}/../../version.mk"
+	source "${SOURCES}/version.mk"
     PACKAGE_NAME="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-universal.pkg"
 	PACKAGE_NAME_SIGNED="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-universal-signed.pkg"
     echo "Building package [$PACKAGE_NAME]"
@@ -98,7 +98,7 @@ PACK_LINUX()
 	mkdir -p ${PAYLOAD_BUILD}
 	mkdir -p ${SCRIPTS_BUILD}
 
-	cp ${HERE}/../../os/macos/Info.plist ${BRAND_OSX_BUNDLE_DIR}/Contents
+	cp ${SOURCES}/os/macos/Info.plist ${BRAND_OSX_BUNDLE_DIR}/Contents
 	cp -r ${BRAND_OSX_BUNDLE_DIR} ${PAYLOAD_BUILD}
 
 	if [ "$PKG_SIGN_POSSIBLE" -eq "1" ]; then

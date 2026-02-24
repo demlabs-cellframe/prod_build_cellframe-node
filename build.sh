@@ -19,7 +19,15 @@ DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 MHERE="$DIR"
 
 
-export SOURCES=${MHERE}/../
+_find_root="${MHERE}"
+while [ ! -f "${_find_root}/CMakeLists.txt" ] && [ "${_find_root}" != "/" ]; do
+    _find_root=$(dirname "${_find_root}")
+done
+if [ ! -f "${_find_root}/CMakeLists.txt" ]; then
+    echo "Error: Cannot find project root (no CMakeLists.txt found)" >&2
+    exit 1
+fi
+export SOURCES="${_find_root}"
 
 NAME_OUT="$(uname -s)"
 case "${NAME_OUT}" in
@@ -165,9 +173,9 @@ cd ${BUILD_DIR}/build
 
 #debug out
 pwd
-echo "${CMAKE[@]} ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}"
+echo "${CMAKE[@]} ${SOURCES} -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}"
 #echo $HERE
 export INSTALL_ROOT=${BUILD_DIR}/dist
-"${CMAKE[@]}" ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}  
+"${CMAKE[@]}" ${SOURCES} -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}  
 "${MAKE[@]}"  -j $NPROC
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
