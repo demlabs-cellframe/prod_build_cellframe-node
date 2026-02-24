@@ -200,13 +200,13 @@ PACK_OSX()
     #cp -r ${DIST_DIR}/Applications/CellframeNode.app ${PACKAGE_DIR}/CellframeNode.app
 
     #copy pkginstall
-	cp  ${HERE}/../../os/macos/PKGINSTALL/* ${PACKAGE_DIR}
+	cp  ${SOURCES}/os/macos/PKGINSTALL/* ${PACKAGE_DIR}
 
 	echo "Do packaging magic in [$PACKAGE_DIR]"
 	
 	
 	#get version info
-	source "${HERE}/../../version.mk"
+	source "${SOURCES}/version.mk"
     PACKAGE_NAME="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-universal.pkg"
     PACKAGE_NAME_SIGNED="cellframe-node-${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_PATCH}-universal-signed.pkg"
     PKG_PATH="${OUT_DIR}/${PACKAGE_NAME}"
