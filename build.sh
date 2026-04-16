@@ -19,7 +19,17 @@ DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 MHERE="$DIR"
 
 
-export SOURCES=${MHERE}/../
+# Support both repository layouts:
+# 1) <repo>/prod_build/build.sh -> sources at ../
+# 2) <repo>/tools/prod_build/build.sh -> sources at ../../
+if [ -f "${MHERE}/../CMakeLists.txt" ]; then
+  export SOURCES="${MHERE}/../"
+elif [ -f "${MHERE}/../../CMakeLists.txt" ]; then
+  export SOURCES="${MHERE}/../../"
+else
+  echo "Unable to locate source root from [${MHERE}]"
+  exit 255
+fi
 
 NAME_OUT="$(uname -s)"
 case "${NAME_OUT}" in
@@ -165,9 +175,9 @@ cd ${BUILD_DIR}/build
 
 #debug out
 pwd
-echo "${CMAKE[@]} ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}"
+echo "${CMAKE[@]} ${SOURCES} -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}"
 #echo $HERE
 export INSTALL_ROOT=${BUILD_DIR}/dist
-"${CMAKE[@]}" ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}  
+"${CMAKE[@]}" "${SOURCES}" -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}
 "${MAKE[@]}"  -j $NPROC
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
