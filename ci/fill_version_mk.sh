@@ -5,7 +5,7 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT="$(cd "${HERE}/../.." && pwd)"
+ROOT="$(cd "${HERE}/../../.." && pwd)"
 GET_VAR="${HERE}/gitlab_project_var.sh"
 
 PATCH_NUM_VAR_NAME="P_$(echo "${CI_COMMIT_REF_SLUG}" | tr '-' '_')_PATCH_NUM"
