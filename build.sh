@@ -19,7 +19,7 @@ DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 MHERE="$DIR"
 
 
-export SOURCES=${MHERE}/../
+export SOURCES=${MHERE}/../../
 
 NAME_OUT="$(uname -s)"
 case "${NAME_OUT}" in
@@ -168,6 +168,6 @@ pwd
 echo "${CMAKE[@]} ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}"
 #echo $HERE
 export INSTALL_ROOT=${BUILD_DIR}/dist
-"${CMAKE[@]}" ${MHERE}/../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}  
+"${CMAKE[@]}" ${MHERE}/../../ -DCREATE_DEFAULT_CONFIG=OFF ${BUILD_OPTIONS[@]}  
 "${MAKE[@]}"  -j $NPROC
 "${MAKE[@]}" install DESTDIR=${INSTALL_ROOT}
