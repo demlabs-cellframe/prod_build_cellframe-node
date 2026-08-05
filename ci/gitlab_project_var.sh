@@ -4,7 +4,11 @@
 #
 # Usage: gitlab_project_var.sh <variable_key>
 # Prints variable value to stdout.
-# Exit codes: 0 ok | 1 API/transport error | 2 variable not found (404)
+# Exit codes:
+#   0 ok
+#   1 API/transport error
+#   2 variable not found (404)
+#   3 auth error (401/403 — expired/invalid ACCESS_TOKEN)
 
 set -euo pipefail
 
@@ -17,7 +21,7 @@ var_name="$1"
 
 if [ -z "${ACCESS_TOKEN:-}" ]; then
     echo "ERROR: ACCESS_TOKEN is not set" >&2
-    exit 1
+    exit 3
 fi
 
 if [ -z "${CI_API_V4_URL:-}" ] || [ -z "${CI_PROJECT_ID:-}" ]; then
@@ -42,6 +46,11 @@ fi
 
 if [ "$http_code" = "404" ]; then
     exit 2
+fi
+
+if [ "$http_code" = "401" ] || [ "$http_code" = "403" ]; then
+    echo "ERROR: GitLab variables API HTTP ${http_code} for '${var_name}': $(cat "$tmp_body")" >&2
+    exit 3
 fi
 
 if [ "$http_code" != "200" ]; then
